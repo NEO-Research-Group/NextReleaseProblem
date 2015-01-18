@@ -10,7 +10,7 @@ import neo.requirements.sat.minisatp.NextReleaseToMinisatpAdaptor;
 
 public class SatBasedAlgorithm {
 
-	MinisatpSolver minisatpSolver = new MinisatpSolver(false);
+	MinisatpSolver minisatpSolver = new MinisatpSolver(true);
 	private NextReleaseProblem problem;
 	private NextReleaseToMinisatpAdaptor adaptor;
 

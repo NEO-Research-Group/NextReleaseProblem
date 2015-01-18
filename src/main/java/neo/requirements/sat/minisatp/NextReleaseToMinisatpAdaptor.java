@@ -123,14 +123,14 @@ public class NextReleaseToMinisatpAdaptor {
 	private List<String> exclusionConstraintToMinisatp(int firstRequirement, int secondRequirement) {
 		String minisatpConstraint = "-1 "+getRequirementMinisatpName(firstRequirement)+
 				" -1 "+getRequirementMinisatpName(secondRequirement)+
-				" >= -1;";
+				" >= -1";
 		return Arrays.asList(minisatpConstraint);
 	}
 
 	private List<String> implicationConstraintToMinisatp(int firstRequirement, int secondRequirement) {
 		String minisatpConstraint = "-1 "+getRequirementMinisatpName(firstRequirement)+
 				" +1 "+getRequirementMinisatpName(secondRequirement)+
-				" >= 0;";
+				" >= 0";
 		return Arrays.asList(minisatpConstraint);
 	}
 	
