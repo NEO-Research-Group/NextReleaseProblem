@@ -21,7 +21,7 @@ public class MinisatpSolver {
 	}
 	
 	public MinisatpSolver() {
-		this(false);
+		this(true);
 	}
 
 	public Integer solveMinisatpInstance(String pb, SearchDirection direction) {

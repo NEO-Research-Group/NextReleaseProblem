@@ -55,7 +55,7 @@ public class NextReleaseToMinisatpAdaptor {
 	}
 
 	private String getEffortExpression() {
-		if (effortExpression!=null) {
+		if (effortExpression==null) {
 			effortExpression=computeEffortExpression();
 		}
 		return effortExpression;
@@ -74,7 +74,7 @@ public class NextReleaseToMinisatpAdaptor {
 	}
 	
 	private String getValueExpression() {
-		if (valueExpression!=null) {
+		if (valueExpression==null) {
 			valueExpression=computeValueExpression();
 		}
 		return valueExpression;
@@ -93,7 +93,7 @@ public class NextReleaseToMinisatpAdaptor {
 	}
 
 	private List<String> minisatpConstraints() {
-		if (minisatpConstraints != null) {
+		if (minisatpConstraints == null) {
 			minisatpConstraints=computeMinisatpConstraints();
 		}
 		return minisatpConstraints;
