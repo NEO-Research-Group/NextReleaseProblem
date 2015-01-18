@@ -2,11 +2,12 @@ package neo.requirements.sat;
 
 import java.io.File;
 
+import neo.requirements.sat.minisatp.MinisatpSolver;
+import neo.requirements.sat.minisatp.MinisatpSolver.Result;
+import neo.requirements.sat.minisatp.NextReleaseToMinisatpAdaptor;
 import NRPReaders.FileReader;
 import NRPReaders.InMemoryReader;
 import NRPReaders.NextReleaseProblemReader;
-import neo.requirements.sat.minisatp.MinisatpSolver;
-import neo.requirements.sat.minisatp.NextReleaseToMinisatpAdaptor;
 
 public class SatBasedAlgorithm {
 
@@ -23,31 +24,31 @@ public class SatBasedAlgorithm {
 	public SatBasedAlgorithm() {}
 
 	public void computeParetoFront () {
-
 		Integer effort = problem.sumOfAllRequirementsEffort();
-		Integer value = 0;
-
-		while (effort != null && value != null) {
+		boolean compute=true;
+		while (compute) {
 			String minisatpInstance = adaptor.minisatpInstanceForMaximizingValue(effort);
-			value = minisatpSolver.solveMinisatpInstance(minisatpInstance, MinisatpSolver.SearchDirection.MAXIMIZE);
-			if (value != null) {
-				effort = minimizeEffort(value);
+			Result requirementsValue = minisatpSolver.solveMinisatpInstance(minisatpInstance, MinisatpSolver.SearchDirection.MAXIMIZE);
+			if (requirementsValue != null) {
+				effort = minimizeEffort(requirementsValue.value);
 			}
+			compute = (requirementsValue!=null && effort!=null);
 		}
 	}
 
 	private Integer minimizeEffort(Integer value) {
 		String minisatpInstance = adaptor.minisatpInstanceForMinimizingEffort(value);
-		Integer effort = minisatpSolver.solveMinisatpInstance(minisatpInstance, MinisatpSolver.SearchDirection.MINIMIZE);
-		if (effort != null) {
-			reportParetoFrontPoint(effort, value);
-			effort = effort-1;
+		Result requirementsEffort = minisatpSolver.solveMinisatpInstance(minisatpInstance, MinisatpSolver.SearchDirection.MINIMIZE);
+		if (requirementsEffort != null) {
+			reportParetoFrontPoint(requirementsEffort, value);
+			return requirementsEffort.value-1;
+		} else {
+			return null;
 		}
-		return effort;
 	}
 
-	private void reportParetoFrontPoint (int effort, int value) {
-		System.out.println("Effort: "+effort+", Value: "+value);
+	private void reportParetoFrontPoint (Result requirementsEffort, int value) {
+		System.out.println("Effort: "+requirementsEffort.value+", Value: "+value+", Solution: "+requirementsEffort.solution);
 	}
 
 	public void setProblem(NextReleaseProblem problem){

@@ -13,6 +13,7 @@ public class MinisatReader {
 
 	private int optimalValue;
 	private boolean optimalValueFound=false;
+	private String optimalSolution;
 
 	public boolean isOptimalValueFound() {
 		return optimalValueFound;
@@ -42,15 +43,21 @@ public class MinisatReader {
 					}
 					// Comment line
 					break;
+				case 'v':
+					optimalSolution = line.substring(1).trim();
+					break;
 			}
 		}
 		
 	}
-
 	
 	public int getOptimalValue()
 	{
 		return optimalValue;
+	}
+	
+	public String getOptimalSolution() {
+		return optimalSolution;
 	}
 
 }

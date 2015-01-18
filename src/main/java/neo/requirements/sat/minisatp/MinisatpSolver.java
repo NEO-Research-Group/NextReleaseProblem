@@ -10,6 +10,15 @@ import neo.requirements.sat.minisatp.MinisatpSolver.SearchDirection;
 public class MinisatpSolver {
 	
 	public static enum SearchDirection {MINIMIZE, MAXIMIZE}
+	public static class Result {
+		public int value;
+		public String solution;
+		
+		public Result(int value, String solution) {
+			this.value=value;
+			this.solution = solution;
+		}
+	}
 
 	private static String MINISATP_PATH= "./";
 	private static String MINISATP_EXE = MINISATP_PATH+"minisat+_64-bit_static";
@@ -24,7 +33,7 @@ public class MinisatpSolver {
 		this(true);
 	}
 
-	public Integer solveMinisatpInstance(String pb, SearchDirection direction) {
+	public Result solveMinisatpInstance(String pb, SearchDirection direction) {
 		try {
 	
 			File tmp = File.createTempFile("fm-minisat", ".odp", new File("."));
@@ -50,12 +59,11 @@ public class MinisatpSolver {
 				tmp.delete();
 			}
 	
-			if (mr.isOptimalValueFound())
-			{
-				return (direction.equals(SearchDirection.MAXIMIZE)?-1:1) * mr.getOptimalValue();
-			}
-			else
-			{
+			if (mr.isOptimalValueFound()) {
+				int value = (direction.equals(SearchDirection.MAXIMIZE)?-1:1) * mr.getOptimalValue();
+				String solution = mr.getOptimalSolution();	
+				return new Result(value, solution);
+			} else {
 				return null;
 			}
 	
