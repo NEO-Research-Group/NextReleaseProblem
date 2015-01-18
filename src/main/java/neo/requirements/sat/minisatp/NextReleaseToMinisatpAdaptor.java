@@ -135,7 +135,8 @@ public class NextReleaseToMinisatpAdaptor {
 	}
 	
 	private List<String> simultaneousConstraintToMinisatp(int firstRequirement, int secondRequirement) {
-		List<String> minisatpConstraints = implicationConstraintToMinisatp(firstRequirement, secondRequirement);
+		List<String> minisatpConstraints = new ArrayList<String>();
+		minisatpConstraints.addAll(implicationConstraintToMinisatp(firstRequirement, secondRequirement));
 		minisatpConstraints.addAll(implicationConstraintToMinisatp(secondRequirement, firstRequirement));
 		return minisatpConstraints;
 	}
