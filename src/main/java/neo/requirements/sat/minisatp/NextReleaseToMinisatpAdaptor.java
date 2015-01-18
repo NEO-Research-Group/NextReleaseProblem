@@ -11,7 +11,8 @@ import neo.requirements.sat.NextReleaseProblem.Constraint;
 
 public class NextReleaseToMinisatpAdaptor {
 	private String effortExpression;
-	private String valueExpression;
+	private String positiveValueExpression;
+	private String negativeValueExpression;
 	private List<String> minisatpConstraints;
 	private NextReleaseProblem nextReleaseProblem;
 
@@ -21,13 +22,13 @@ public class NextReleaseToMinisatpAdaptor {
 	
 	public String minisatpInstanceForMinimizingEffort (int valueLowerBound) {
 		String effortExpression = getEffortExpression();
-		String valueExpression = getValueExpression();
+		String positiveValueExpression = getPositiveValueExpression();
 		
 		StringWriter minisatpInstance = new StringWriter();
 		PrintWriter writer = new PrintWriter(minisatpInstance);
 	
 		writer.println("min: "+effortExpression+";");
-		writer.println(valueExpression + " >= "+valueLowerBound+";");
+		writer.println(positiveValueExpression + " >= "+valueLowerBound+";");
 		for (String constraint: minisatpConstraints()) {
 			writer.println(constraint+";");
 		}
@@ -38,13 +39,13 @@ public class NextReleaseToMinisatpAdaptor {
 
 	public String minisatpInstanceForMaximizingValue (int effortUpperBound) {
 		
-		String valueExpression = getValueExpression();
+		String negativeValueExpression = getNegativeValueExpression();
 		String effortExpression = getEffortExpression();
 			
 		StringWriter minisatpInstance = new StringWriter();
 		PrintWriter writer = new PrintWriter(minisatpInstance);
 	
-		writer.println("min: "+valueExpression+";");
+		writer.println("min: "+negativeValueExpression+";");
 		writer.println(effortExpression + " <= "+effortUpperBound+";");
 		for (String constraint: minisatpConstraints()) {
 			writer.println(constraint+";");
@@ -73,17 +74,24 @@ public class NextReleaseToMinisatpAdaptor {
 		return string;
 	}
 	
-	private String getValueExpression() {
-		if (valueExpression==null) {
-			valueExpression=computeValueExpression();
+	private String getPositiveValueExpression() {
+		if (positiveValueExpression==null) {
+			positiveValueExpression=computeValueExpression(1);
 		}
-		return valueExpression;
+		return positiveValueExpression;
+	}
+	
+	private String getNegativeValueExpression() {
+		if (negativeValueExpression==null) {
+			negativeValueExpression = computeValueExpression(-1);
+		}
+		return negativeValueExpression;
 	}
 
-	private String computeValueExpression() {
+	private String computeValueExpression(int multiplier) {
 		String string = "";
 		for (int requirement=0; requirement < nextReleaseProblem.getRequirements(); requirement++) {
-			string += minisatpStringForInteger(nextReleaseProblem.totalValueForRequirement(requirement)) +" "+
+			string += minisatpStringForInteger(multiplier*nextReleaseProblem.totalValueForRequirement(requirement)) +" "+	
 		              getRequirementMinisatpName(requirement);
 			if (requirement < nextReleaseProblem.getRequirements()-1) {
 				string += " ";
