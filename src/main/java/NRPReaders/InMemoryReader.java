@@ -43,14 +43,14 @@ public class InMemoryReader implements NextReleaseProblemReader {
 	private static List<Constraint> constraints = Arrays.asList(new Constraint[]{
 		new Constraint(ConstraintType.SIMULTANEOUS, 2, 11),
 		new Constraint(ConstraintType.SIMULTANEOUS, 10, 12),
-		new Constraint(ConstraintType.IMPLICATION, 3, 7),
-		new Constraint(ConstraintType.IMPLICATION, 3, 16),
-		new Constraint(ConstraintType.IMPLICATION, 7, 16),
-		new Constraint(ConstraintType.IMPLICATION, 8, 2),
-		new Constraint(ConstraintType.IMPLICATION, 8, 5),
-		new Constraint(ConstraintType.IMPLICATION, 8, 11),
-		new Constraint(ConstraintType.IMPLICATION, 8, 18),
-		new Constraint(ConstraintType.IMPLICATION, 10, 18)
+		new Constraint(ConstraintType.IMPLICATION, 7, 3),
+		new Constraint(ConstraintType.IMPLICATION, 16, 3),
+		new Constraint(ConstraintType.IMPLICATION, 16, 7),
+		new Constraint(ConstraintType.IMPLICATION, 2, 8),
+		new Constraint(ConstraintType.IMPLICATION, 5, 8),
+		new Constraint(ConstraintType.IMPLICATION, 11, 8),
+		new Constraint(ConstraintType.IMPLICATION, 18, 8),
+		new Constraint(ConstraintType.IMPLICATION, 18, 10)
 	});
 	
 	private NextReleaseProblem nrp;
