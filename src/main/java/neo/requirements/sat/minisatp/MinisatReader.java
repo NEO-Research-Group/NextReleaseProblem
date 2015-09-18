@@ -12,11 +12,16 @@ public class MinisatReader {
 	 */
 
 	private int optimalValue;
-	private boolean optimalValueFound=false;
+	private boolean solutionFound=false;
 	private String optimalSolution;
+	private boolean satisfiable;
 
 	public boolean isOptimalValueFound() {
-		return optimalValueFound;
+		return solutionFound;
+	}
+	
+	public boolean isSatisfiable() {
+		return satisfiable;
 	}
 
 
@@ -39,12 +44,21 @@ public class MinisatReader {
 							System.out.println(parts[i]);
 						}*/
 						optimalValue = Integer.parseInt(parts[1].trim());
-						optimalValueFound = true;
+						solutionFound = true;
 					}
 					// Comment line
 					break;
 				case 'v':
 					optimalSolution = line.substring(1).trim();
+					break;
+				case 's':
+					if (line.contains("UNSAT")) {
+						solutionFound=true;
+						satisfiable=false;
+					} else if (line.contains("SAT")) {
+						solutionFound=true;
+						satisfiable=true;
+					}
 					break;
 			}
 		}

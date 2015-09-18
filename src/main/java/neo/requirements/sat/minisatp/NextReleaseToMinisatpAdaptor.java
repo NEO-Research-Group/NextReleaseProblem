@@ -36,6 +36,25 @@ public class NextReleaseToMinisatpAdaptor {
 	
 		return minisatpInstance.toString();
 	}
+	
+	public String minisatDecisionInstance(int effort, int value) {
+		//System.out.println("Preparing: "+effort+" "+value);
+		String effortExpression = getEffortExpression();
+		String positiveValueExpression = getPositiveValueExpression();
+		
+		StringWriter minisatpInstance = new StringWriter();
+		PrintWriter writer = new PrintWriter(minisatpInstance);
+	
+		writer.println(effortExpression + " <= "+effort+";");
+		writer.println(positiveValueExpression + " >= "+value+";");
+		for (String constraint: minisatpConstraints()) {
+			writer.println(constraint+";");
+		}
+		writer.close();
+	
+		return minisatpInstance.toString();
+	}
+
 
 	public String minisatpInstanceForMaximizingValue (int effortUpperBound) {
 		
@@ -156,6 +175,7 @@ public class NextReleaseToMinisatpAdaptor {
 	private String minisatpStringForInteger(int value) {
 		return ((value > 0)?"+":"")+value;
 	}
+
 
 	
 }

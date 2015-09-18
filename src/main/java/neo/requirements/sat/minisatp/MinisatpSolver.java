@@ -37,6 +37,7 @@ public class MinisatpSolver {
 		try {
 	
 			File tmp = File.createTempFile("fm-minisat", ".odp", new File("."));
+			//System.out.println("Solving "+tmp);
 			FileOutputStream fos = new FileOutputStream (tmp);
 	
 			PrintWriter pw = new PrintWriter(fos);
@@ -71,6 +72,45 @@ public class MinisatpSolver {
 			throw new RuntimeException (e);
 		}
 	}
+	
+	public boolean solveMinisatDecisionInstance(String minisatInstance) {
+		try {
+			File tmp = File.createTempFile("fm-minisat", ".odp", new File("."));
+			//System.out.println("Solving "+tmp);
+			FileOutputStream fos = new FileOutputStream (tmp);
+	
+			PrintWriter pw = new PrintWriter(fos);
+			pw.println(minisatInstance);
+			pw.close();
+	
+			Process p = Runtime.getRuntime().exec(
+					new String []{MINISATP_EXE,"-a",tmp.getAbsolutePath()});
+	
+			p.getOutputStream().close();
+			InputStream is = p.getInputStream();
+	
+			MinisatReader mr = new MinisatReader();
+			mr.parse(is);
+			is.close();
+	
+			p.waitFor();
+	
+			if (!keepOdpFiles) {
+				tmp.delete();
+			}
+	
+			if (mr.isOptimalValueFound()) {
+				boolean result = mr.isSatisfiable();
+				//System.out.println("Result: "+(result?"SAT":"UNSAT"));
+				return result;
+			} else {
+				throw new RuntimeException ("Minisat problem");
+			}
+	
+		} catch (Exception  e) {
+			throw new RuntimeException (e);
+		}
+	}
 
 	public boolean isKeepOdpFiles() {
 		return keepOdpFiles;
@@ -79,4 +119,6 @@ public class MinisatpSolver {
 	public void setKeepOdpFiles(boolean keepOdpFiles) {
 		this.keepOdpFiles = keepOdpFiles;
 	}
+
+
 }
