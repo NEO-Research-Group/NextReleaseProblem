@@ -97,9 +97,6 @@ public class DichotomicPureSatBasedAlgorithm {
 				
 				iterator.add(newLabelledSolution);
 				
-				// TODO
-				
-				
 			}
 			
 		}
