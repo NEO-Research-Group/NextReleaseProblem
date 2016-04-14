@@ -1,7 +1,8 @@
-package neo.requirements.sat;
+package neo.requirements.sat.algorithms;
 
 import java.io.File;
 
+import neo.requirements.sat.NextReleaseProblem;
 import neo.requirements.sat.minisatp.MinisatpSolver;
 import neo.requirements.sat.minisatp.MinisatpSolver.Result;
 import neo.requirements.sat.minisatp.NextReleaseToMinisatpAdaptor;
