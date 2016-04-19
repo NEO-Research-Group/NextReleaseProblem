@@ -8,7 +8,7 @@ import ilog.cplex.IloCplex;
 import neo.requirements.sat.NextReleaseProblem;
 import neo.requirements.sat.NextReleaseProblem.Constraint;
 
-public class NextReleaseToCplexAdaptor {
+public class NextReleaseToCplexAdaptor implements CplexAdaptor {
 	
 	private Modelo modelo;
 	private NextReleaseProblem nextReleaseProblem;
@@ -32,7 +32,7 @@ public class NextReleaseToCplexAdaptor {
 		}
 	}
 	
-	
+	@Override
 	public Modelo ilpInstanceForMinimizingEffort (int valueLowerBound) {
 		try {
 			clearModelo();
@@ -45,6 +45,7 @@ public class NextReleaseToCplexAdaptor {
 		}
 	}
 
+	@Override
 	public Modelo ilpInstanceForMaximizingValue (int effortUpperBound) {
 		try {
 			clearModelo();

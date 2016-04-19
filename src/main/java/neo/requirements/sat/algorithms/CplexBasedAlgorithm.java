@@ -3,10 +3,12 @@ package neo.requirements.sat.algorithms;
 import java.io.File;
 
 import neo.requirements.sat.NextReleaseProblem;
+import neo.requirements.sat.cplex.CplexAdaptor;
 import neo.requirements.sat.cplex.CplexSolver;
 import neo.requirements.sat.cplex.CplexSolver.Result;
 import neo.requirements.sat.cplex.Modelo;
 import neo.requirements.sat.cplex.NextReleaseToCplexAdaptor;
+import neo.requirements.sat.cplex.XuanNRPToCplexAdaptor;
 import neo.requirements.sat.util.SingleThreadCPUTimer;
 import NRPReaders.ClassicInstancesReader;
 import NRPReaders.FileReader;
@@ -17,7 +19,7 @@ public class CplexBasedAlgorithm {
 
 	private CplexSolver cplexSolver = new CplexSolver();
 	private NextReleaseProblem problem;
-	private NextReleaseToCplexAdaptor adaptor;
+	private CplexAdaptor adaptor;
 
 
 	public CplexBasedAlgorithm(NextReleaseProblem problem) {
@@ -57,7 +59,16 @@ public class CplexBasedAlgorithm {
 
 	public void setProblem(NextReleaseProblem problem){
 		this.problem = problem;
-		adaptor = new NextReleaseToCplexAdaptor(problem);
+		switch (problem.getKindOfInstance()) {
+		case ALMERIA:
+			adaptor = new NextReleaseToCplexAdaptor(problem);
+			break;
+		case XUAN:
+			adaptor = new XuanNRPToCplexAdaptor(problem);
+			break;
+			default:
+				throw new RuntimeException("Unsupported kind of instance");
+		}
 	}
 
 	public static void main (String [] args) {

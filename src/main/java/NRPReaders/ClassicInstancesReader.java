@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import neo.requirements.sat.NextReleaseProblem;
 import neo.requirements.sat.NextReleaseProblem.Constraint;
 import neo.requirements.sat.NextReleaseProblem.ConstraintType;
+import neo.requirements.sat.NextReleaseProblem.KindOfInstance;
 
 public class ClassicInstancesReader implements NextReleaseProblemReader {
 	
@@ -32,8 +33,10 @@ public class ClassicInstancesReader implements NextReleaseProblemReader {
 			readConstraintsNew(scanner);
 			readCustomers(scanner);
 			
-			return new NextReleaseProblem(valueOfRequirementForCustomer, 
+			NextReleaseProblem nextReleaseProblem = new NextReleaseProblem(valueOfRequirementForCustomer, 
 					costOfRequirements, weightOfCustomers, constraints);
+			nextReleaseProblem.setKindOfInstance(KindOfInstance.XUAN);
+			return nextReleaseProblem;
 			
 		} catch (IOException e) {
 			throw new RuntimeException(e);

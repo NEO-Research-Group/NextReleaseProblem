@@ -31,8 +31,8 @@ public class CplexSolver {
 			modelo.cplex.setOut(null);
 			
 			
-			modelo.cplex.setParam(IloCplex.DoubleParam.EpInt, 0);
-			modelo.cplex.setParam(IloCplex.DoubleParam.EpGap, 0);
+			modelo.cplex.setParam(IloCplex.DoubleParam.EpInt, 1E-9);
+			modelo.cplex.setParam(IloCplex.DoubleParam.EpGap, 1E-9);
 			modelo.cplex.setParam(IloCplex.DoubleParam.EpOpt, 1E-9);
 			
 			//modelo.cplex.exportModel("modelo.lp");

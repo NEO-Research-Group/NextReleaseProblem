@@ -5,6 +5,7 @@ import java.util.List;
 public class NextReleaseProblem {
 	
 	public static enum ConstraintType {IMPLICATION, EXCLUSION, SIMULTANEOUS}
+	public static enum KindOfInstance {ALMERIA, XUAN}
 	public static class Constraint {
 		public ConstraintType type;
 		public int firstRequirement;
@@ -25,6 +26,7 @@ public class NextReleaseProblem {
 	private int [] effortOfRequirements;
 	private int [] weightOfStakeholders;
 	private List<Constraint> constraints;
+	private KindOfInstance kindOfInstance;
 
 	public NextReleaseProblem (int [][] valueOfRequirementsForStakeholders, 
 			int [] effortOfREquirements,
@@ -39,6 +41,7 @@ public class NextReleaseProblem {
 		
 		stakeholders = weightOfStakeholder.length;
 		requirements = effortOfREquirements.length;
+		kindOfInstance = KindOfInstance.ALMERIA;
 	}
 	
 	
@@ -92,6 +95,16 @@ public class NextReleaseProblem {
 			sum+=effort;
 		}
 		return sum;
+	}
+
+
+	public KindOfInstance getKindOfInstance() {
+		return kindOfInstance;
+	}
+
+
+	public void setKindOfInstance(KindOfInstance kindOfInstance) {
+		this.kindOfInstance = kindOfInstance;
 	}
 	
 
