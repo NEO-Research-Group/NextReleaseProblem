@@ -7,6 +7,8 @@ import neo.requirements.sat.cplex.CplexSolver;
 import neo.requirements.sat.cplex.CplexSolver.Result;
 import neo.requirements.sat.cplex.Modelo;
 import neo.requirements.sat.cplex.NextReleaseToCplexAdaptor;
+import neo.requirements.sat.util.SingleThreadCPUTimer;
+import NRPReaders.ClassicInstancesReader;
 import NRPReaders.FileReader;
 import NRPReaders.InMemoryReader;
 import NRPReaders.NextReleaseProblemReader;
@@ -60,9 +62,17 @@ public class CplexBasedAlgorithm {
 
 	public static void main (String [] args) {
 		NextReleaseProblemReader reader;
+		SingleThreadCPUTimer timer = new SingleThreadCPUTimer();
+		timer.startTimer();
 		if (args.length > 0) {
-			File instancia = new File(args[0]);
-			reader = new FileReader(instancia);
+			if (args[0].equals("-xuan")) {
+				File instancia = new File(args[1]);
+				reader = new ClassicInstancesReader(instancia);
+			} else {
+				File instancia = new File(args[0]);
+				reader = new FileReader(instancia);
+			}
+			
 		} else {
 			reader = new InMemoryReader();
 		}
@@ -70,6 +80,7 @@ public class CplexBasedAlgorithm {
 		NextReleaseProblem problem = reader.readInstance();
 		CplexBasedAlgorithm algorithm = new CplexBasedAlgorithm(problem);
 		algorithm.computeParetoFront();
+		System.out.println("Time: "+timer.elapsedTimeInMilliseconds()+ " ms");
 	}
 
 }
