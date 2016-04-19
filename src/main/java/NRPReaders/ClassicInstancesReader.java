@@ -58,8 +58,8 @@ public class ClassicInstancesReader implements NextReleaseProblemReader {
 		constraints = new ArrayList<Constraint>();
 		int dependencies = scanner.nextInt();
 		for (int dependency=0; dependency < dependencies; dependency++) {
-			int secondRequirement = scanner.nextInt();
-			int firstREquirement = scanner.nextInt();
+			int secondRequirement = scanner.nextInt()-1;
+			int firstREquirement = scanner.nextInt()-1;
 			Constraint constraint = new Constraint(ConstraintType.IMPLICATION, firstREquirement, secondRequirement);
 			constraints.add(constraint);
 		}

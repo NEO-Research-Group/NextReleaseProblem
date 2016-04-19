@@ -1,6 +1,7 @@
 package neo.requirements.sat.cplex;
 
 import ilog.concert.IloException;
+import ilog.concert.IloIntVar;
 import ilog.concert.IloLinearNumExpr;
 import ilog.concert.IloNumExpr;
 import ilog.cplex.IloCplex;
@@ -25,6 +26,10 @@ public class NextReleaseToCplexAdaptor {
 	private void clearModelo() throws IloException {
 		modelo.cplex.clearModel();
 		modelo.variables = modelo.cplex.boolVarArray(nextReleaseProblem.getRequirements());
+		int requirement=0;
+		for (IloIntVar variable: modelo.variables) {
+			variable.setName("x"+(++requirement));
+		}
 	}
 	
 	
