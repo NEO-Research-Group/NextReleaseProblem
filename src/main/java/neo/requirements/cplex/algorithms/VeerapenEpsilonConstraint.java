@@ -4,45 +4,38 @@ import ilog.concert.IloException;
 import ilog.concert.IloLinearNumExpr;
 import ilog.concert.IloLinearNumExprIterator;
 import ilog.concert.IloNumVar;
-import ilog.cplex.IloCplex;
 import ilog.cplex.IloCplex.UnknownObjectException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import neo.requirements.cplex.ILPAdaptor;
 import neo.requirements.cplex.ILPBasedBiobjectiveSolver;
-import neo.requirements.cplex.ILPSolverListener;
 import neo.requirements.cplex.Modelo;
 import neo.requirements.util.EfficientSolution;
 import neo.requirements.util.EfficientSolutionWithTimeStamp;
 import neo.requirements.util.SingleThreadCPUTimer;
 
-public class VeerapenEpsilonConstraint implements ILPBasedBiobjectiveSolver {
+public class VeerapenEpsilonConstraint extends AbstractILPBasedBIobjectiveSolver {
 
-	private static final int VALUE_OBJECTIVE = 1;
-	private static final int EFFORT_OBJECTIVE = 0;
+	private static final int STEP = 1;
 	
-	private ILPSolverListener listener;
-	private List<EfficientSolution> paretoFront;
-
 	@Override
 	public List<EfficientSolution> computeParetoFront(ILPAdaptor adaptor) {
 		SingleThreadCPUTimer timer = new SingleThreadCPUTimer();
 		timer.startTimer();
 		try {
-			paretoFront = new ArrayList<>();
+			createParetoFront();
 
 			Modelo modelo = adaptor.ilpModelForConstraints();
-			modelo.cplex.addMinimize(adaptor.getObjective(VALUE_OBJECTIVE));
+			modelo.cplex.addMinimize(adaptor.getObjective(firstObjective()));
 			
 			EfficientSolution previousEfficientSolution=null;
 
 			while (solveIlpInstance(modelo)) {
-				double value = (int)Math.round(modelo.cplex.getObjValue());
-				double effort = (int)Math.round(evaluateLinearExpression(modelo, adaptor.getObjective(EFFORT_OBJECTIVE)));
+				double firstObjValue = (int)Math.round(modelo.cplex.getObjValue());
+				double secondObjValue = (int)Math.round(evaluateLinearExpression(modelo, adaptor.getObjective(secondObjective())));
 				
-				EfficientSolution currentEfficientSolution=new EfficientSolutionWithTimeStamp(new double [] {effort, value},  timer.elapsedTimeInMilliseconds());
+				EfficientSolution currentEfficientSolution=new EfficientSolutionWithTimeStamp(new double [] {firstObjValue, secondObjValue},  timer.elapsedTimeInMilliseconds());
 				
 				if (!dominates(currentEfficientSolution, previousEfficientSolution)) {
 					reportEfficientSolution(previousEfficientSolution);
@@ -50,8 +43,8 @@ public class VeerapenEpsilonConstraint implements ILPBasedBiobjectiveSolver {
 				previousEfficientSolution=currentEfficientSolution;
 				
 				modelo = adaptor.ilpModelForConstraints();
-				modelo.cplex.addLe(adaptor.getObjective(EFFORT_OBJECTIVE), effort-1);
-				modelo.cplex.addMinimize(adaptor.getObjective(VALUE_OBJECTIVE));
+				modelo.cplex.addLe(adaptor.getObjective(secondObjective()), secondObjValue-STEP);
+				modelo.cplex.addMinimize(adaptor.getObjective(firstObjective()));
 			}
 			reportEfficientSolution(previousEfficientSolution);
 			
@@ -59,6 +52,14 @@ public class VeerapenEpsilonConstraint implements ILPBasedBiobjectiveSolver {
 		} catch (IloException e) {
 			throw new RuntimeException (e);
 		}
+	}
+
+	protected int secondObjective() {
+		return 1;
+	}
+
+	protected int firstObjective() {
+		return 0;
 	}
 
 	private double evaluateLinearExpression(Modelo modelo, IloLinearNumExpr objective) throws IloException {
@@ -76,12 +77,6 @@ public class VeerapenEpsilonConstraint implements ILPBasedBiobjectiveSolver {
 		return result;
 	}
 
-	protected void reportEfficientSolution(
-			EfficientSolution previousEfficientSolution) {
-		notifyEfficientSolution(previousEfficientSolution);
-		paretoFront.add(previousEfficientSolution);
-	}
-	
 	private boolean dominates(EfficientSolution currentEfficientSolution,
 			EfficientSolution previousEfficientSolution) {
 		if (previousEfficientSolution==null) {
@@ -99,26 +94,6 @@ public class VeerapenEpsilonConstraint implements ILPBasedBiobjectiveSolver {
 		return oneSmaller;
 	}
 
-	private void notifyEfficientSolution(EfficientSolution efficientSolution) {
-		if (listener != null) {
-			listener.notifyEfficientSolutionFound(efficientSolution);
-		}
-		
-	}
-
-	public boolean solveIlpInstance(Modelo modelo) throws IloException {	
-			modelo.cplex.setOut(null);
-			modelo.cplex.setParam(IloCplex.DoubleParam.EpInt, 1E-9);
-			modelo.cplex.setParam(IloCplex.DoubleParam.EpGap, 1E-9);
-			modelo.cplex.setParam(IloCplex.DoubleParam.EpOpt, 1E-9);
-			return modelo.cplex.solve();
-	}
-
-	@Override
-	public void setListener(ILPSolverListener listener) {
-		this.listener = listener;
-	}
-	
 	@Override
 	public String getName() {
 		return "Veerapen epsilon constraint";
