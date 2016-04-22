@@ -3,7 +3,6 @@ package neo.requirements.cplex;
 import ilog.concert.IloException;
 import ilog.concert.IloIntVar;
 import ilog.concert.IloLinearNumExpr;
-import ilog.concert.IloNumExpr;
 import ilog.cplex.IloCplex;
 import neo.requirements.problems.NextReleaseProblem;
 import neo.requirements.problems.NextReleaseProblem.Constraint;
@@ -11,6 +10,8 @@ import neo.requirements.problems.NextReleaseProblem.KindOfInstance;
 
 public class NRPCplexILPAdaptor implements ILPAdaptor {
 	
+	private static final int VALUE_OBJECTIVE = 1;
+	private static final int EFFORT_OBJECTIVE = 0;
 	private Modelo modelo;
 	private NextReleaseProblem nextReleaseProblem;
 
@@ -51,7 +52,7 @@ public class NRPCplexILPAdaptor implements ILPAdaptor {
 	}
 	
 	private void clearModeloXuan() throws IloException {
-		ensureModeloExists();
+		ensureModeloExistsAndClear();
 		modelo.variables = modelo.cplex.boolVarArray(nextReleaseProblem.getRequirements()+nextReleaseProblem.getStakeholders());
 		int requirement;
 		for (requirement=0; requirement < nextReleaseProblem.getRequirements(); requirement++) {
@@ -63,7 +64,7 @@ public class NRPCplexILPAdaptor implements ILPAdaptor {
 		}
 	}
 
-	protected void ensureModeloExists() throws IloException {
+	protected void ensureModeloExistsAndClear() throws IloException {
 		if (modelo==null) {
 			createModelo();
 		} else {
@@ -77,7 +78,7 @@ public class NRPCplexILPAdaptor implements ILPAdaptor {
 	}
 	
 	private void clearModeloAlmeria() throws IloException {
-		ensureModeloExists();
+		ensureModeloExistsAndClear();
 		modelo.variables = modelo.cplex.boolVarArray(nextReleaseProblem.getRequirements());
 		int requirement;
 		for (requirement=0; requirement < nextReleaseProblem.getRequirements(); requirement++) {
@@ -180,9 +181,9 @@ public class NRPCplexILPAdaptor implements ILPAdaptor {
 			throw new RuntimeException("No model in the adaptor, please call ilpModelForConstraint before");
 		}
 		
-		if (objective==0) {
+		if (objective==EFFORT_OBJECTIVE) {
 			return computeEffortExpression();
-		} else if (objective==1) {
+		} else if (objective==VALUE_OBJECTIVE) {
 			return computeValueExpression(-1);
 		} else {
 			throw new IllegalArgumentException("The number of objective must be 0 or 1 (biobjective problems)");
@@ -191,9 +192,9 @@ public class NRPCplexILPAdaptor implements ILPAdaptor {
 
 	@Override
 	public double getNadirUpperBound(int objective) {
-		if (objective==0) {
+		if (objective==EFFORT_OBJECTIVE) {
 			return nextReleaseProblem.sumOfAllRequirementsEffort();
-		} else if (objective==1) {
+		} else if (objective==VALUE_OBJECTIVE) {
 			return computeMaximumSatisfaction();
 		} else {
 			throw new IllegalArgumentException("The number of objective must be 0 or 1 (biobjective problems)");
