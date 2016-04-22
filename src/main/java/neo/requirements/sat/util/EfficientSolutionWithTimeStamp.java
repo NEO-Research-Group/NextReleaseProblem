@@ -12,7 +12,7 @@ public class EfficientSolutionWithTimeStamp extends EfficientSolution {
 		return timestamp;
 	}
 	
-	public String toStirng() {
+	public String toString() {
 		return super.toString() + " time: "+timestamp;
 	}
 
