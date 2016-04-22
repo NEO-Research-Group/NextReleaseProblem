@@ -3,6 +3,7 @@ package neo.requirements.cplex;
 import java.io.File;
 import java.util.List;
 
+import neo.requirements.cplex.algorithms.ChicanoEpsilonConstraint;
 import neo.requirements.problems.NextReleaseProblem;
 import neo.requirements.problems.readers.ClassicInstancesReader;
 import neo.requirements.problems.readers.FileReader;

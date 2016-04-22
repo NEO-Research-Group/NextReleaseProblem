@@ -1,4 +1,4 @@
-package neo.requirements.cplex;
+package neo.requirements.cplex.algorithms;
 
 import ilog.concert.IloException;
 import ilog.cplex.IloCplex;
@@ -6,6 +6,10 @@ import ilog.cplex.IloCplex;
 import java.util.ArrayList;
 import java.util.List;
 
+import neo.requirements.cplex.ILPAdaptor;
+import neo.requirements.cplex.ILPBasedBiobjectiveSolver;
+import neo.requirements.cplex.ILPSolverListener;
+import neo.requirements.cplex.Modelo;
 import neo.requirements.util.EfficientSolution;
 import neo.requirements.util.EfficientSolutionWithTimeStamp;
 import neo.requirements.util.SingleThreadCPUTimer;
