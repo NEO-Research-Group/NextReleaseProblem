@@ -34,9 +34,18 @@ public class MainClass {
 		
 		NextReleaseProblem problem = reader.readInstance();
 		ILPBasedBiobjectiveSolver solver = new ChicanoEpsilonConstraint();
+		solver.setListener(new ILPSolverListener() {
+			@Override
+			public void notifyEfficientSolutionFound(EfficientSolution solution) {
+				System.out.println("Found: "+solution);
+				
+			}
+		});
 		ILPAdaptor adaptor = new NRPCplexILPAdaptor(problem);
 		List<EfficientSolution> paretoFront = solver.computeParetoFront(adaptor);
 		
+		System.out.println("Pareto Front");
+		System.out.println("------------");
 		for (EfficientSolution solution: paretoFront) {
 			System.out.println(solution);
 		}
