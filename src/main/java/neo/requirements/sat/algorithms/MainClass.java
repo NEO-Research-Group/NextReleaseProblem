@@ -6,7 +6,7 @@ import java.util.List;
 import neo.requirements.sat.NextReleaseProblem;
 import neo.requirements.sat.cplex.ILPAdaptor;
 import neo.requirements.sat.cplex.NRPCplexILPAdaptor;
-import neo.requirements.sat.util.EfficientSolutionWithTimeStamp;
+import neo.requirements.sat.util.EfficientSolution;
 import neo.requirements.sat.util.SingleThreadCPUTimer;
 import NRPReaders.ClassicInstancesReader;
 import NRPReaders.FileReader;
@@ -35,12 +35,12 @@ public class MainClass {
 		NextReleaseProblem problem = reader.readInstance();
 		ILPBasedBiobjectiveSolver solver = new ChicanoEpsilonConstraint();
 		ILPAdaptor adaptor = new NRPCplexILPAdaptor(problem);
-		List<EfficientSolutionWithTimeStamp> paretoFront = solver.computeParetoFront(adaptor);
+		List<EfficientSolution> paretoFront = solver.computeParetoFront(adaptor);
 		
-		for (EfficientSolutionWithTimeStamp solution: paretoFront) {
+		for (EfficientSolution solution: paretoFront) {
 			System.out.println(solution);
 		}
-		
+		System.out.println(paretoFront.size()+ " efficient solutions computed");
 		System.out.println("Time: "+timer.elapsedTimeInMilliseconds()+ " ms");
 	}
 

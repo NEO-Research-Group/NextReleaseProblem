@@ -8,6 +8,7 @@ import java.util.List;
 
 import neo.requirements.sat.cplex.ILPAdaptor;
 import neo.requirements.sat.cplex.Modelo;
+import neo.requirements.sat.util.EfficientSolution;
 import neo.requirements.sat.util.EfficientSolutionWithTimeStamp;
 import neo.requirements.sat.util.SingleThreadCPUTimer;
 
@@ -17,11 +18,11 @@ public class ChicanoEpsilonConstraint implements ILPBasedBiobjectiveSolver {
 	private static final int EFFORT_OBJECTIVE = 0;
 
 	@Override
-	public List<EfficientSolutionWithTimeStamp> computeParetoFront(ILPAdaptor adaptor) {
+	public List<EfficientSolution> computeParetoFront(ILPAdaptor adaptor) {
 		SingleThreadCPUTimer timer = new SingleThreadCPUTimer();
 		timer.startTimer();
 		try {
-			List<EfficientSolutionWithTimeStamp> paretoFront = new ArrayList<>();
+			List<EfficientSolution> paretoFront = new ArrayList<>();
 
 			Modelo modelo = adaptor.ilpModelForConstraints();
 			modelo.cplex.addMinimize(adaptor.getObjective(VALUE_OBJECTIVE));
@@ -37,7 +38,7 @@ public class ChicanoEpsilonConstraint implements ILPBasedBiobjectiveSolver {
 
 				double effort = (int)modelo.cplex.getObjValue();
 
-				paretoFront.add(new EfficientSolutionWithTimeStamp(new double [] {-effort, value},  timer.elapsedTimeInMilliseconds()));
+				paretoFront.add(new EfficientSolutionWithTimeStamp(new double [] {effort, -value},  timer.elapsedTimeInMilliseconds()));
 
 				modelo = adaptor.ilpModelForConstraints();
 				modelo.cplex.addLe(adaptor.getObjective(EFFORT_OBJECTIVE), effort-1);
