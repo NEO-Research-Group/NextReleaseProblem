@@ -13,6 +13,10 @@ public class EfficientSolution {
 		return objectiveValues[i];
 	}
 	
+	public int getNumberOfObjectives() {
+		return objectiveValues.length;
+	}
+	
 	public String toString() {
 		return Arrays.toString(objectiveValues);
 	}
