@@ -51,8 +51,7 @@ public class NRPCplexILPAdaptor implements ILPAdaptor {
 	}
 	
 	private void clearModeloXuan() throws IloException {
-		modelo = new Modelo();
-		modelo.cplex = new IloCplex();
+		ensureModeloExists();
 		modelo.variables = modelo.cplex.boolVarArray(nextReleaseProblem.getRequirements()+nextReleaseProblem.getStakeholders());
 		int requirement;
 		for (requirement=0; requirement < nextReleaseProblem.getRequirements(); requirement++) {
@@ -63,10 +62,22 @@ public class NRPCplexILPAdaptor implements ILPAdaptor {
 			modelo.variables[requirement++].setName(getStakeholderName(stakeholder));
 		}
 	}
-	
-	private void clearModeloAlmeria() throws IloException {
+
+	protected void ensureModeloExists() throws IloException {
+		if (modelo==null) {
+			createModelo();
+		} else {
+			modelo.cplex.clearModel();
+		}
+	}
+
+	private void createModelo() throws IloException {
 		modelo = new Modelo();
 		modelo.cplex = new IloCplex();
+	}
+	
+	private void clearModeloAlmeria() throws IloException {
+		ensureModeloExists();
 		modelo.variables = modelo.cplex.boolVarArray(nextReleaseProblem.getRequirements());
 		int requirement;
 		for (requirement=0; requirement < nextReleaseProblem.getRequirements(); requirement++) {
