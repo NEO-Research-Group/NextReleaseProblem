@@ -1,4 +1,4 @@
-package neo.requirements.sat.cplex;
+package neo.requirements.cplex;
 
 public interface CplexAdaptor {
 

@@ -1,19 +1,14 @@
-package neo.requirements.sat.algorithms;
+package neo.requirements.cplex;
 
 import java.io.File;
 
-import neo.requirements.sat.NextReleaseProblem;
-import neo.requirements.sat.cplex.CplexAdaptor;
-import neo.requirements.sat.cplex.CplexSolver;
-import neo.requirements.sat.cplex.CplexSolver.Result;
-import neo.requirements.sat.cplex.Modelo;
-import neo.requirements.sat.cplex.NextReleaseToCplexAdaptor;
-import neo.requirements.sat.cplex.XuanNRPToCplexAdaptor;
-import neo.requirements.sat.util.SingleThreadCPUTimer;
-import NRPReaders.ClassicInstancesReader;
-import NRPReaders.FileReader;
-import NRPReaders.InMemoryReader;
-import NRPReaders.NextReleaseProblemReader;
+import neo.requirements.cplex.CplexSolver.Result;
+import neo.requirements.problems.NextReleaseProblem;
+import neo.requirements.problems.readers.ClassicInstancesReader;
+import neo.requirements.problems.readers.FileReader;
+import neo.requirements.problems.readers.InMemoryReader;
+import neo.requirements.problems.readers.NextReleaseProblemReader;
+import neo.requirements.util.SingleThreadCPUTimer;
 
 public class CplexBasedAlgorithm {
 

@@ -5,12 +5,12 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.net.URL;
 
-import neo.requirements.sat.NextReleaseProblem.Constraint;
-import neo.requirements.sat.NextReleaseProblem.ConstraintType;
+import neo.requirements.problems.NextReleaseProblem;
+import neo.requirements.problems.NextReleaseProblem.Constraint;
+import neo.requirements.problems.NextReleaseProblem.ConstraintType;
+import neo.requirements.problems.readers.FileReader;
 
 import org.junit.Test;
-
-import NRPReaders.FileReader;
 
 public class FileReaderTest {
 

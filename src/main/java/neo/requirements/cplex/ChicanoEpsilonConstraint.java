@@ -1,4 +1,4 @@
-package neo.requirements.sat.algorithms;
+package neo.requirements.cplex;
 
 import ilog.concert.IloException;
 import ilog.cplex.IloCplex;
@@ -6,11 +6,9 @@ import ilog.cplex.IloCplex;
 import java.util.ArrayList;
 import java.util.List;
 
-import neo.requirements.sat.cplex.ILPAdaptor;
-import neo.requirements.sat.cplex.Modelo;
-import neo.requirements.sat.util.EfficientSolution;
-import neo.requirements.sat.util.EfficientSolutionWithTimeStamp;
-import neo.requirements.sat.util.SingleThreadCPUTimer;
+import neo.requirements.util.EfficientSolution;
+import neo.requirements.util.EfficientSolutionWithTimeStamp;
+import neo.requirements.util.SingleThreadCPUTimer;
 
 public class ChicanoEpsilonConstraint implements ILPBasedBiobjectiveSolver {
 

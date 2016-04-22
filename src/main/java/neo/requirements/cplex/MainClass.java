@@ -1,17 +1,15 @@
-package neo.requirements.sat.algorithms;
+package neo.requirements.cplex;
 
 import java.io.File;
 import java.util.List;
 
-import neo.requirements.sat.NextReleaseProblem;
-import neo.requirements.sat.cplex.ILPAdaptor;
-import neo.requirements.sat.cplex.NRPCplexILPAdaptor;
-import neo.requirements.sat.util.EfficientSolution;
-import neo.requirements.sat.util.SingleThreadCPUTimer;
-import NRPReaders.ClassicInstancesReader;
-import NRPReaders.FileReader;
-import NRPReaders.InMemoryReader;
-import NRPReaders.NextReleaseProblemReader;
+import neo.requirements.problems.NextReleaseProblem;
+import neo.requirements.problems.readers.ClassicInstancesReader;
+import neo.requirements.problems.readers.FileReader;
+import neo.requirements.problems.readers.InMemoryReader;
+import neo.requirements.problems.readers.NextReleaseProblemReader;
+import neo.requirements.util.EfficientSolution;
+import neo.requirements.util.SingleThreadCPUTimer;
 
 public class MainClass {
 

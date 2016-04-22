@@ -1,4 +1,4 @@
-package neo.requirements.sat.util;
+package neo.requirements.util;
 
 import java.util.Arrays;
 

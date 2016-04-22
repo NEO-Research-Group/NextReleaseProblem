@@ -1,4 +1,4 @@
-package NRPReaders;
+package neo.requirements.problems.readers;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,10 +8,10 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import neo.requirements.sat.NextReleaseProblem;
-import neo.requirements.sat.NextReleaseProblem.Constraint;
-import neo.requirements.sat.NextReleaseProblem.ConstraintType;
-import neo.requirements.sat.NextReleaseProblem.KindOfInstance;
+import neo.requirements.problems.NextReleaseProblem;
+import neo.requirements.problems.NextReleaseProblem.Constraint;
+import neo.requirements.problems.NextReleaseProblem.ConstraintType;
+import neo.requirements.problems.NextReleaseProblem.KindOfInstance;
 
 public class ClassicInstancesReader implements NextReleaseProblemReader {
 	

@@ -1,4 +1,4 @@
-package neo.requirements.sat;
+package neo.requirements.problems;
 
 import java.util.List;
 

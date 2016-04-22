@@ -1,4 +1,4 @@
-package neo.requirements.sat.util;
+package neo.requirements.util;
 
 public class EfficientSolutionWithTimeStamp extends EfficientSolution {
 	private long timestamp;

@@ -1,4 +1,4 @@
-package neo.requirements.sat.cplex;
+package neo.requirements.cplex;
 
 import ilog.concert.IloException;
 import ilog.concert.IloNumVar;

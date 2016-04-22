@@ -1,17 +1,17 @@
-package neo.requirements.sat.algorithms;
+package neo.requirements.sat;
 
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-import neo.requirements.sat.NextReleaseProblem;
+import neo.requirements.problems.NextReleaseProblem;
+import neo.requirements.problems.readers.FileReader;
+import neo.requirements.problems.readers.InMemoryReader;
+import neo.requirements.problems.readers.NextReleaseProblemReader;
 import neo.requirements.sat.minisatp.MinisatpSolver;
-import neo.requirements.sat.minisatp.MinisatpSolver.Result;
 import neo.requirements.sat.minisatp.NextReleaseToMinisatpAdaptor;
-import NRPReaders.FileReader;
-import NRPReaders.InMemoryReader;
-import NRPReaders.NextReleaseProblemReader;
+import neo.requirements.sat.minisatp.MinisatpSolver.Result;
 
 public class DichotomicPureSatBasedAlgorithm {
 	

@@ -1,9 +1,8 @@
-package neo.requirements.sat.algorithms;
+package neo.requirements.cplex;
 
 import java.util.List;
 
-import neo.requirements.sat.cplex.ILPAdaptor;
-import neo.requirements.sat.util.EfficientSolution;
+import neo.requirements.util.EfficientSolution;
 
 public interface ILPBasedBiobjectiveSolver {
 	public void setListener(ILPSolverListener listener);

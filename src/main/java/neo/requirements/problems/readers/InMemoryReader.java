@@ -1,11 +1,11 @@
-package NRPReaders;
+package neo.requirements.problems.readers;
 
 import java.util.Arrays;
 import java.util.List;
 
-import neo.requirements.sat.NextReleaseProblem;
-import neo.requirements.sat.NextReleaseProblem.Constraint;
-import neo.requirements.sat.NextReleaseProblem.ConstraintType;
+import neo.requirements.problems.NextReleaseProblem;
+import neo.requirements.problems.NextReleaseProblem.Constraint;
+import neo.requirements.problems.NextReleaseProblem.ConstraintType;
 
 public class InMemoryReader implements NextReleaseProblemReader {
 

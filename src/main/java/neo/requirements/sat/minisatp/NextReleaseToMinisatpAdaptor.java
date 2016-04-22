@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import neo.requirements.sat.NextReleaseProblem;
-import neo.requirements.sat.NextReleaseProblem.Constraint;
+import neo.requirements.problems.NextReleaseProblem;
+import neo.requirements.problems.NextReleaseProblem.Constraint;
 
 public class NextReleaseToMinisatpAdaptor {
 	private String effortExpression;

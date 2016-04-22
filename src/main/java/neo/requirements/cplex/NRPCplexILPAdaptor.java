@@ -1,13 +1,13 @@
-package neo.requirements.sat.cplex;
+package neo.requirements.cplex;
 
 import ilog.concert.IloException;
 import ilog.concert.IloIntVar;
 import ilog.concert.IloLinearNumExpr;
 import ilog.concert.IloNumExpr;
 import ilog.cplex.IloCplex;
-import neo.requirements.sat.NextReleaseProblem;
-import neo.requirements.sat.NextReleaseProblem.Constraint;
-import neo.requirements.sat.NextReleaseProblem.KindOfInstance;
+import neo.requirements.problems.NextReleaseProblem;
+import neo.requirements.problems.NextReleaseProblem.Constraint;
+import neo.requirements.problems.NextReleaseProblem.KindOfInstance;
 
 public class NRPCplexILPAdaptor implements ILPAdaptor {
 	

@@ -1,6 +1,6 @@
-package neo.requirements.sat.algorithms;
+package neo.requirements.cplex;
 
-import neo.requirements.sat.util.EfficientSolution;
+import neo.requirements.util.EfficientSolution;
 
 public interface ILPSolverListener {
 	public void notifyEfficientSolutionFound(EfficientSolution solution);
