@@ -8,5 +8,6 @@ public interface ILPBasedBiobjectiveSolver {
 	public void setListener(ILPSolverListener listener);
 	public List<EfficientSolution> computeParetoFront(ILPAdaptor adaptor);
 	public String getName();
+	public String getCommandLineName();
 
 }

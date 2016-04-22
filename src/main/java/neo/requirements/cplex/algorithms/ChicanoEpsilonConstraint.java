@@ -81,4 +81,9 @@ public class ChicanoEpsilonConstraint implements ILPBasedBiobjectiveSolver {
 		return "Chicano epsilon constraint";
 	}
 
+	@Override
+	public String getCommandLineName() {
+		return "chicano";
+	}
+
 }

@@ -124,4 +124,9 @@ public class VeerapenEpsilonConstraint implements ILPBasedBiobjectiveSolver {
 		return "Veerapen epsilon constraint";
 	}
 
+	@Override
+	public String getCommandLineName() {
+		return "veerapen";
+	}
+
 }

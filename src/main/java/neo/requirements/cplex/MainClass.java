@@ -20,12 +20,12 @@ import neo.requirements.problems.readers.FileReader;
 import neo.requirements.problems.readers.InMemoryReader;
 import neo.requirements.problems.readers.NextReleaseProblemReader;
 import neo.requirements.util.EfficientSolution;
+import neo.requirements.util.ILPBasedAlgorithmsManager;
 import neo.requirements.util.SingleThreadCPUTimer;
 
 public class MainClass {
 	
-	private static final String CHICANO = "chicano";
-	private static final String VEERAPEN = "veerapen";
+	private static final String ALGORITHMS_PACKAGE = "neo.requirements.cplex.algorithms";
 	private static final String LISTENER = "listener";
 	private static final String PROGRAM_NAME = "MainClass";
 	private static final String INSTANCE = "instance";
@@ -47,7 +47,7 @@ public class MainClass {
 	    Options options = new Options();
 	    
 	    options.addOption(INSTANCE, true, "NRP instance file");
-	    options.addOption(ALGORITHM, true, "algorithm used to solve the instance: chicano (epsilon-constraint, default), veerapen (epsilon constraint)");
+	    options.addOption(ALGORITHM, true, "algorithm used to solve the instance (use ? to see the algorithms)");
 	    options.addOption(XUAN, false, "the problem is the one of Xuan et al.");
 	    options.addOption(LISTENER, false, "enables the solution listener");
 	    options.addOption(ALMERIA, false, "the problem is the one of del Águila et al.");
@@ -65,44 +65,50 @@ public class MainClass {
 		}
 		
 		CommandLine commandLine = parseCommandLine(args);
-		NextReleaseProblemReader reader;
 		
-		if (commandLine.hasOption(MEMORY)) {
-			reader = new InMemoryReader();
-		} else {
-			File instancia = new File(commandLine.getOptionValue(INSTANCE));
+		try {
 
-			if (commandLine.hasOption(XUAN)) {
-				if (commandLine.hasOption(ALMERIA)) {
-					System.err.println("The instance cannot have two formats: xuan and almeria");
-					return;
-				}
-				reader = new ClassicInstancesReader(instancia);
+			NextReleaseProblemReader reader = configureReader(commandLine);
+			ILPBasedBiobjectiveSolver solver = configureSolver(commandLine);
 
-			} else {
-				reader = new FileReader(instancia);
-			}
+			NextReleaseProblem problem = reader.readInstance();
+			ILPAdaptor adaptor = new NRPCplexILPAdaptor(problem);
+
+			SingleThreadCPUTimer timer = new SingleThreadCPUTimer();
+			timer.startTimer();
+			System.out.println("Running "+solver.getName());
+
+			List<EfficientSolution> paretoFront = solver.computeParetoFront(adaptor);
+			long computationTime = timer.elapsedTimeInMilliseconds();
+			
+			showResults(paretoFront, computationTime);
+
 		}
-		
-		NextReleaseProblem problem = reader.readInstance();
-		
-		ILPBasedBiobjectiveSolver solver;
-		if (commandLine.hasOption(ALGORITHM)) {
-			switch (commandLine.getOptionValue(ALGORITHM)) {
-			case VEERAPEN:
-				solver = new VeerapenEpsilonConstraint();
-				break;
-			case CHICANO:
-				solver = new ChicanoEpsilonConstraint();
-				break;
-			default:
-				System.err.println("Unknown algorithm "+commandLine.getOptionValue(ALGORITHM));
-				return;
-			}
-		} else {
-			solver = new ChicanoEpsilonConstraint();
+		catch (IllegalArgumentException e) {
+			System.err.println(e.getMessage());
 		}
 
+	}
+
+	protected void showResults(List<EfficientSolution> paretoFront,
+			long computationTime) {
+		System.out.println("Pareto Front");
+		System.out.println("------------");
+		for (EfficientSolution solution: paretoFront) {
+			System.out.println(solution);
+		}
+		System.out.println(paretoFront.size()+ " efficient solutions computed");
+		
+		System.out.println("Time: "+computationTime+ " ms");
+	}
+
+	protected ILPBasedBiobjectiveSolver configureSolver(CommandLine commandLine) {
+		ILPBasedAlgorithmsManager manager = new ILPBasedAlgorithmsManager(ALGORITHMS_PACKAGE);
+		ILPBasedBiobjectiveSolver solver = manager.getSolver(commandLine.getOptionValue(ALGORITHM));
+		if (solver == null) {
+			throw new IllegalArgumentException("Solver not found, use one of the following IDs: "+manager.getListOfAlgorithms());
+		}
+		
 		if (commandLine.hasOption(LISTENER)) {
 			solver.setListener(new ILPSolverListener() {
 				@Override
@@ -112,23 +118,27 @@ public class MainClass {
 				}
 			});
 		}
-		
-		ILPAdaptor adaptor = new NRPCplexILPAdaptor(problem);
-		
-		SingleThreadCPUTimer timer = new SingleThreadCPUTimer();
-		timer.startTimer();
-		
-		System.out.println("Running "+solver.getName());
-		
-		List<EfficientSolution> paretoFront = solver.computeParetoFront(adaptor);
-		
-		System.out.println("Pareto Front");
-		System.out.println("------------");
-		for (EfficientSolution solution: paretoFront) {
-			System.out.println(solution);
+		return solver;
+	}
+
+	protected NextReleaseProblemReader configureReader(CommandLine commandLine) {
+		NextReleaseProblemReader reader;
+		if (commandLine.hasOption(MEMORY)) {
+			reader = new InMemoryReader();
+		} else {
+			File instancia = new File(commandLine.getOptionValue(INSTANCE));
+
+			if (commandLine.hasOption(XUAN)) {
+				if (commandLine.hasOption(ALMERIA)) {
+					throw new IllegalArgumentException("The instance cannot have two formats: xuan and almeria");
+				}
+				reader = new ClassicInstancesReader(instancia);
+
+			} else {
+				reader = new FileReader(instancia);
+			}
 		}
-		System.out.println(paretoFront.size()+ " efficient solutions computed");
-		System.out.println("Time: "+timer.elapsedTimeInMilliseconds()+ " ms");
+		return reader;
 	}
 	
 	private CommandLine parseCommandLine(String[] args) {
