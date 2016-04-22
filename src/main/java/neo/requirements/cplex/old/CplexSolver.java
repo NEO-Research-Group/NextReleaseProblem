@@ -1,5 +1,6 @@
-package neo.requirements.cplex;
+package neo.requirements.cplex.old;
 
+import neo.requirements.cplex.Modelo;
 import ilog.concert.IloException;
 import ilog.concert.IloNumVar;
 import ilog.cplex.IloCplex;

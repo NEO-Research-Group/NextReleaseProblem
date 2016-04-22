@@ -1,8 +1,9 @@
-package neo.requirements.cplex;
+package neo.requirements.cplex.old;
 
 import java.io.File;
 
-import neo.requirements.cplex.CplexSolver.Result;
+import neo.requirements.cplex.Modelo;
+import neo.requirements.cplex.old.CplexSolver.Result;
 import neo.requirements.problems.NextReleaseProblem;
 import neo.requirements.problems.readers.ClassicInstancesReader;
 import neo.requirements.problems.readers.FileReader;

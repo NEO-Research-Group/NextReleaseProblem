@@ -1,4 +1,6 @@
-package neo.requirements.cplex;
+package neo.requirements.cplex.old;
+
+import neo.requirements.cplex.Modelo;
 
 public interface CplexAdaptor {
 

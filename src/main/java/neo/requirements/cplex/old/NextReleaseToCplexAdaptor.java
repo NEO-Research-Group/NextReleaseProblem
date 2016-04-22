@@ -1,10 +1,11 @@
-package neo.requirements.cplex;
+package neo.requirements.cplex.old;
 
 import ilog.concert.IloException;
 import ilog.concert.IloIntVar;
 import ilog.concert.IloLinearNumExpr;
 import ilog.concert.IloNumExpr;
 import ilog.cplex.IloCplex;
+import neo.requirements.cplex.Modelo;
 import neo.requirements.problems.NextReleaseProblem;
 import neo.requirements.problems.NextReleaseProblem.Constraint;
 
