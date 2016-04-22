@@ -190,28 +190,6 @@ public class NRPCplexILPAdaptor implements ILPAdaptor {
 		}
 	}
 
-	@Override
-	public double getNadirUpperBound(int objective) {
-		if (objective==EFFORT_OBJECTIVE) {
-			return nextReleaseProblem.sumOfAllRequirementsEffort();
-		} else if (objective==VALUE_OBJECTIVE) {
-			return computeMaximumSatisfaction();
-		} else {
-			throw new IllegalArgumentException("The number of objective must be 0 or 1 (biobjective problems)");
-		}
-	}
-
-	private double computeMaximumSatisfaction() {
-		switch (nextReleaseProblem.getKindOfInstance()) {
-		case ALMERIA:
-			return computeMaximumSatisfactionAlmeria();
-		case XUAN:
-			return computeMaximumSatisfactionXuan();
-		default:
-			throw new RuntimeException("Unsupported kind of instance: "+nextReleaseProblem.getKindOfInstance());
-		}
-	}
-
 	private double computeMaximumSatisfactionAlmeria() {
 		int sumSatisfaction=0;
 		for (int requirement=0; requirement < nextReleaseProblem.getRequirements(); requirement++) {
