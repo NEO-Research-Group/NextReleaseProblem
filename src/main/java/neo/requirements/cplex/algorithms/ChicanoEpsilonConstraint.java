@@ -76,4 +76,9 @@ public class ChicanoEpsilonConstraint implements ILPBasedBiobjectiveSolver {
 		this.listener = listener;
 	}
 
+	@Override
+	public String getName() {
+		return "Chicano epsilon constraint";
+	}
+
 }

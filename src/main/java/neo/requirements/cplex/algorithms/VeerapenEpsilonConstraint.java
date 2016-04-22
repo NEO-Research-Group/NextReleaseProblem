@@ -118,5 +118,10 @@ public class VeerapenEpsilonConstraint implements ILPBasedBiobjectiveSolver {
 	public void setListener(ILPSolverListener listener) {
 		this.listener = listener;
 	}
+	
+	@Override
+	public String getName() {
+		return "Veerapen epsilon constraint";
+	}
 
 }
