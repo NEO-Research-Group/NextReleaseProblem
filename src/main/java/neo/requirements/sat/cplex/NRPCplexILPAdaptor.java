@@ -26,22 +26,6 @@ public class NRPCplexILPAdaptor implements ILPAdaptor {
 		return modelo;
 	}
 
-	@Override
-	public IloLinearNumExpr firstObjective() throws IloException {
-		if (modelo == null) {
-			throw new RuntimeException("No model in the adaptor, please call ilpModelForConstraint before");
-		}
-		return computeEffortExpression();
-	}
-
-	@Override
-	public IloLinearNumExpr secondObjective()  throws IloException  {
-		if (modelo == null) {
-			throw new RuntimeException("No model in the adaptor, please call ilpModelForConstraint before");
-		}
-		return computeValueExpression(-1);
-	}
-
 	private void clearModelo() throws IloException {
 		switch (nextReleaseProblem.getKindOfInstance()) {
 		case ALMERIA:
@@ -177,6 +161,59 @@ public class NRPCplexILPAdaptor implements ILPAdaptor {
 	
 	private void simultaneousConstraintToIlp(int firstRequirement, int secondRequirement) throws IloException {
 		modelo.cplex.addEq(getRequirementVariable(firstRequirement), getRequirementVariable(secondRequirement));
+	}
+
+	@Override
+	public IloLinearNumExpr getObjective(int objective) throws IloException {
+		if (modelo == null) {
+			throw new RuntimeException("No model in the adaptor, please call ilpModelForConstraint before");
+		}
+		
+		if (objective==0) {
+			return computeEffortExpression();
+		} else if (objective==1) {
+			return computeValueExpression(-1);
+		} else {
+			throw new IllegalArgumentException("The number of objective must be 0 or 1 (biobjective problems)");
+		}
+	}
+
+	@Override
+	public double getNadirUpperBound(int objective) {
+		if (objective==0) {
+			return nextReleaseProblem.sumOfAllRequirementsEffort();
+		} else if (objective==1) {
+			return computeMaximumSatisfaction();
+		} else {
+			throw new IllegalArgumentException("The number of objective must be 0 or 1 (biobjective problems)");
+		}
+	}
+
+	private double computeMaximumSatisfaction() {
+		switch (nextReleaseProblem.getKindOfInstance()) {
+		case ALMERIA:
+			return computeMaximumSatisfactionAlmeria();
+		case XUAN:
+			return computeMaximumSatisfactionXuan();
+		default:
+			throw new RuntimeException("Unsupported kind of instance: "+nextReleaseProblem.getKindOfInstance());
+		}
+	}
+
+	private double computeMaximumSatisfactionAlmeria() {
+		int sumSatisfaction=0;
+		for (int requirement=0; requirement < nextReleaseProblem.getRequirements(); requirement++) {
+			sumSatisfaction += nextReleaseProblem.totalValueForRequirement(requirement);
+		}
+		return sumSatisfaction;
+	}
+	
+	private double computeMaximumSatisfactionXuan() {
+		int sumSatisfaction=0;
+		for (int stakeholder=0; stakeholder < nextReleaseProblem.getStakeholders(); stakeholder++) {
+			sumSatisfaction += nextReleaseProblem.getWeightOfStakeholder(stakeholder);
+		}
+		return sumSatisfaction;
 	}
 
 	
