@@ -11,5 +11,9 @@ public class EfficientSolutionWithTimeStamp extends EfficientSolution {
 	public long getTimestamp() {
 		return timestamp;
 	}
+	
+	public String toStirng() {
+		return super.toString() + " time: "+timestamp;
+	}
 
 }
