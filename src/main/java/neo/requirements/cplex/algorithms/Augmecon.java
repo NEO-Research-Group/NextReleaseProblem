@@ -7,6 +7,7 @@ import ilog.concert.IloNumVar;
 import ilog.cplex.IloCplex.UnknownObjectException;
 
 import java.util.List;
+import java.util.Properties;
 
 import neo.requirements.cplex.ILPAdaptor;
 import neo.requirements.cplex.ILPBasedBiobjectiveSolver;
@@ -16,6 +17,8 @@ import neo.requirements.util.EfficientSolutionWithTimeStamp;
 import neo.requirements.util.SingleThreadCPUTimer;
 
 public class Augmecon extends AbstractILPBasedBIobjectiveSolver {
+	
+	private Double lambdaValue= null;
 
 	@Override
 	public List<EfficientSolution> computeParetoFront(ILPAdaptor adaptor) {
@@ -41,11 +44,14 @@ public class Augmecon extends AbstractILPBasedBIobjectiveSolver {
 				}
 				previousEfficientSolution=currentEfficientSolution;
 				
-				
-				double lambda=adaptor.minimumDifferenceBetweenEfficientSolutions(firstObjective())/
+				double lambda;
+				if (lambdaValue != null) {
+					lambda = lambdaValue;
+				} else {
+					lambda=adaptor.minimumDifferenceBetweenEfficientSolutions(firstObjective())/
 						(secondObjValue-adaptor.idealLowerBound(secondObjective()));
-				
-				reportLambda(lambda);
+					reportLambda(lambda);
+				}
 				
 				modelo = adaptor.ilpModelForConstraints();
 				IloLinearNumExpr objective = adaptor.getObjective(firstObjective());
@@ -111,5 +117,21 @@ public class Augmecon extends AbstractILPBasedBIobjectiveSolver {
 	public String getCommandLineName() {
 		return "augmecon";
 	}
+
+	@Override
+	public void setConfiguration(Properties configuration) {
+		super.setConfiguration(configuration);
+		
+		String lambdaProperty= configuration.getProperty("lambda");
+		if (lambdaProperty!=null) {
+			if ("adaptive".equals(lambdaProperty)) {
+				lambdaValue=null;
+			} else {
+				lambdaValue = Double.parseDouble(lambdaProperty);
+			}
+		}
+	}
+	
+	
 
 }
