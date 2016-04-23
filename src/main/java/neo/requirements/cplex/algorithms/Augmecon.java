@@ -39,7 +39,7 @@ public class Augmecon extends AbstractILPBasedBIobjectiveSolver {
 				double firstObjValue = (int)Math.round(evaluateLinearExpression(modelo, adaptor.getObjective(firstObjective())));
 				double secondObjValue = (int)Math.round(evaluateLinearExpression(modelo, adaptor.getObjective(secondObjective())));
 				
-				EfficientSolution currentEfficientSolution=new EfficientSolutionWithTimeStamp(new double [] {firstObjValue, secondObjValue},  timer.elapsedTimeInMilliseconds());
+				EfficientSolution currentEfficientSolution=buildEfficientSolution(timer, firstObjValue, secondObjValue);
 				
 				if (!dominates(currentEfficientSolution, previousEfficientSolution)) {
 					reportEfficientSolution(previousEfficientSolution);
@@ -70,6 +70,16 @@ public class Augmecon extends AbstractILPBasedBIobjectiveSolver {
 		} catch (IloException e) {
 			throw new RuntimeException (e);
 		}
+	}
+
+	protected EfficientSolutionWithTimeStamp buildEfficientSolution(
+			SingleThreadCPUTimer timer, double firstObjValue,
+			double secondObjValue) {
+		
+		double[] values = new double [2];
+		values[firstObjective()] = firstObjValue;
+		values[secondObjective()] = secondObjValue;
+		return new EfficientSolutionWithTimeStamp(values,  timer.elapsedTimeInMilliseconds());
 	}
 
 	protected void reportLambda(double lambda) {
