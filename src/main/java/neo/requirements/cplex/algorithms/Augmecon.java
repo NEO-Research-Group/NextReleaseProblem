@@ -27,6 +27,8 @@ public class Augmecon extends AbstractILPBasedBIobjectiveSolver {
 		try {
 			createParetoFront();
 
+			configureOrderForObjectives(adaptor);
+			
 			Modelo modelo = adaptor.ilpModelForConstraints();
 			modelo.cplex.addMinimize(adaptor.getObjective(firstObjective()));
 			
@@ -121,7 +123,10 @@ public class Augmecon extends AbstractILPBasedBIobjectiveSolver {
 	@Override
 	public void setConfiguration(Properties configuration) {
 		super.setConfiguration(configuration);
-		
+		configureLambda(configuration);
+	}
+
+	protected void configureLambda(Properties configuration) {
 		String lambdaProperty= configuration.getProperty("lambda");
 		if (lambdaProperty!=null) {
 			if ("adaptive".equals(lambdaProperty)) {

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import neo.requirements.cplex.ILPAdaptor;
 import neo.requirements.cplex.ILPBasedBiobjectiveSolver;
 import neo.requirements.cplex.ILPSolverListener;
 import neo.requirements.cplex.Modelo;
@@ -61,7 +62,7 @@ public abstract class AbstractILPBasedBIobjectiveSolver  implements ILPBasedBiob
 
 	private void processConfigurationOptions() {
 		configureStep();
-		configureOrderForObjectives();
+		//configureOrderForObjectives();
 	}
 
 	protected void configureStep() {
@@ -71,7 +72,7 @@ public abstract class AbstractILPBasedBIobjectiveSolver  implements ILPBasedBiob
 		}
 	}
 
-	protected void configureOrderForObjectives() {
+	protected void configureOrderForObjectives(ILPAdaptor adaptor) {
 		String propertyValue = configuration.getProperty("objorder");
 		if (propertyValue != null) {
 			switch (propertyValue) {
@@ -81,10 +82,17 @@ public abstract class AbstractILPBasedBIobjectiveSolver  implements ILPBasedBiob
 			case "inverse":
 				naturalOrderForObjectives = false;
 				break;
+			case "adaptive":
+				naturalOrderForObjectives = (computeObjectiveSpan(adaptor, 0) > computeObjectiveSpan(adaptor, 1));
+				break;
 			default:
 				throw new IllegalArgumentException("Unrecognized order for objectives: "+propertyValue);
 			}
 		}
+	}
+
+	protected double computeObjectiveSpan(ILPAdaptor adaptor, int objective) {
+		return adaptor.nadirUpperBound(objective)-adaptor.idealLowerBound(objective);
 	}
 
 	protected int secondObjective() {
