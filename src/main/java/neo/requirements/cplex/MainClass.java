@@ -132,6 +132,13 @@ public class MainClass {
 					System.out.println("Found: "+solution);
 
 				}
+
+				@Override
+				public void info(String key, String value) {
+					System.out.println("Info: "+key+"="+value);
+					
+				}
+				
 			});
 		}
 		

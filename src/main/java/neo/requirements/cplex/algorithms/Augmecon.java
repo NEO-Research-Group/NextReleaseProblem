@@ -45,6 +45,7 @@ public class Augmecon extends AbstractILPBasedBIobjectiveSolver {
 				double lambda=adaptor.minimumDifferenceBetweenEfficientSolutions(firstObjective())/
 						(secondObjValue-adaptor.idealLowerBound(secondObjective()));
 				
+				reportLambda(lambda);
 				
 				modelo = adaptor.ilpModelForConstraints();
 				IloLinearNumExpr objective = adaptor.getObjective(firstObjective());
@@ -60,6 +61,12 @@ public class Augmecon extends AbstractILPBasedBIobjectiveSolver {
 			return paretoFront;
 		} catch (IloException e) {
 			throw new RuntimeException (e);
+		}
+	}
+
+	protected void reportLambda(double lambda) {
+		if (listener != null) {
+			listener.info("lambda", ""+lambda);
 		}
 	}
 
