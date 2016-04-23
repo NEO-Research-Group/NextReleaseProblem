@@ -12,6 +12,8 @@ import neo.requirements.cplex.ILPBasedBiobjectiveSolver;
 import neo.requirements.cplex.ILPSolverListener;
 import neo.requirements.cplex.Modelo;
 import neo.requirements.util.EfficientSolution;
+import neo.requirements.util.EfficientSolutionWithTimeStamp;
+import neo.requirements.util.SingleThreadCPUTimer;
 
 public abstract class AbstractILPBasedBIobjectiveSolver  implements ILPBasedBiobjectiveSolver{
 
@@ -73,20 +75,22 @@ public abstract class AbstractILPBasedBIobjectiveSolver  implements ILPBasedBiob
 	}
 
 	protected void configureOrderForObjectives(ILPAdaptor adaptor) {
-		String propertyValue = configuration.getProperty("objorder");
-		if (propertyValue != null) {
-			switch (propertyValue) {
-			case "natural":
-				naturalOrderForObjectives = true;
-				break;
-			case "inverse":
-				naturalOrderForObjectives = false;
-				break;
-			case "adaptive":
-				naturalOrderForObjectives = (computeObjectiveSpan(adaptor, 0) > computeObjectiveSpan(adaptor, 1));
-				break;
-			default:
-				throw new IllegalArgumentException("Unrecognized order for objectives: "+propertyValue);
+		if (configuration != null) {
+			String propertyValue = configuration.getProperty("objorder");
+			if (propertyValue != null) {
+				switch (propertyValue) {
+				case "natural":
+					naturalOrderForObjectives = true;
+					break;
+				case "inverse":
+					naturalOrderForObjectives = false;
+					break;
+				case "adaptive":
+					naturalOrderForObjectives = (computeObjectiveSpan(adaptor, 0) > computeObjectiveSpan(adaptor, 1));
+					break;
+				default:
+					throw new IllegalArgumentException("Unrecognized order for objectives: "+propertyValue);
+				}
 			}
 		}
 	}
@@ -102,5 +106,14 @@ public abstract class AbstractILPBasedBIobjectiveSolver  implements ILPBasedBiob
 	protected int firstObjective() {
 		return naturalOrderForObjectives?0:1;
 	}
+
+	protected EfficientSolutionWithTimeStamp buildEfficientSolution(SingleThreadCPUTimer timer, double firstObjValue,
+			double secondObjValue) {
+				
+				double[] values = new double [2];
+				values[firstObjective()] = firstObjValue;
+				values[secondObjective()] = secondObjValue;
+				return new EfficientSolutionWithTimeStamp(values,  timer.elapsedTimeInMilliseconds());
+			}
 
 }

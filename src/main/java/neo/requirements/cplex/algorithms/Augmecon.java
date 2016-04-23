@@ -13,7 +13,6 @@ import neo.requirements.cplex.ILPAdaptor;
 import neo.requirements.cplex.ILPBasedBiobjectiveSolver;
 import neo.requirements.cplex.Modelo;
 import neo.requirements.util.EfficientSolution;
-import neo.requirements.util.EfficientSolutionWithTimeStamp;
 import neo.requirements.util.SingleThreadCPUTimer;
 
 public class Augmecon extends AbstractILPBasedBIobjectiveSolver {
@@ -26,7 +25,6 @@ public class Augmecon extends AbstractILPBasedBIobjectiveSolver {
 		timer.startTimer();
 		try {
 			createParetoFront();
-
 			configureOrderForObjectives(adaptor);
 			
 			Modelo modelo = adaptor.ilpModelForConstraints();
@@ -70,16 +68,6 @@ public class Augmecon extends AbstractILPBasedBIobjectiveSolver {
 		} catch (IloException e) {
 			throw new RuntimeException (e);
 		}
-	}
-
-	protected EfficientSolutionWithTimeStamp buildEfficientSolution(
-			SingleThreadCPUTimer timer, double firstObjValue,
-			double secondObjValue) {
-		
-		double[] values = new double [2];
-		values[firstObjective()] = firstObjValue;
-		values[secondObjective()] = secondObjValue;
-		return new EfficientSolutionWithTimeStamp(values,  timer.elapsedTimeInMilliseconds());
 	}
 
 	protected void reportLambda(double lambda) {

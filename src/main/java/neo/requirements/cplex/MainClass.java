@@ -138,6 +138,11 @@ public class MainClass {
 					System.out.println("Info: "+key+"="+value);
 					
 				}
+
+				@Override
+				public void reportInnecesaryRunOfSolver() {
+					System.out.println("Innecesary run of ILP solver");
+				}
 				
 			});
 		}

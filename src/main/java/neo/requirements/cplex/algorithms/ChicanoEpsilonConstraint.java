@@ -22,6 +22,7 @@ public class ChicanoEpsilonConstraint extends AbstractILPBasedBIobjectiveSolver 
 		timer.startTimer();
 		try {
 			createParetoFront();
+			configureOrderForObjectives(adaptor);
 
 			Modelo modelo = adaptor.ilpModelForConstraints();
 			modelo.cplex.addMinimize(adaptor.getObjective(firstObjective()));
@@ -37,7 +38,7 @@ public class ChicanoEpsilonConstraint extends AbstractILPBasedBIobjectiveSolver 
 
 				double secondObjValue = (int)Math.round(modelo.cplex.getObjValue());
 
-				EfficientSolution efficientSolution = new EfficientSolutionWithTimeStamp(new double [] {firstObjValue, secondObjValue},  timer.elapsedTimeInMilliseconds());
+				EfficientSolution efficientSolution = buildEfficientSolution(timer, firstObjValue, secondObjValue);
 				reportEfficientSolution(efficientSolution);
 
 				modelo = adaptor.ilpModelForConstraints();

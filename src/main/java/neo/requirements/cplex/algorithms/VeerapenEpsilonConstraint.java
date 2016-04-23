@@ -23,6 +23,7 @@ public class VeerapenEpsilonConstraint extends AbstractILPBasedBIobjectiveSolver
 		timer.startTimer();
 		try {
 			createParetoFront();
+			configureOrderForObjectives(adaptor);
 
 			Modelo modelo = adaptor.ilpModelForConstraints();
 			modelo.cplex.addMinimize(adaptor.getObjective(firstObjective()));
@@ -33,7 +34,7 @@ public class VeerapenEpsilonConstraint extends AbstractILPBasedBIobjectiveSolver
 				double firstObjValue = (int)Math.round(modelo.cplex.getObjValue());
 				double secondObjValue = (int)Math.round(evaluateLinearExpression(modelo, adaptor.getObjective(secondObjective())));
 				
-				EfficientSolution currentEfficientSolution=new EfficientSolutionWithTimeStamp(new double [] {firstObjValue, secondObjValue},  timer.elapsedTimeInMilliseconds());
+				EfficientSolution currentEfficientSolution=buildEfficientSolution(timer, firstObjValue, secondObjValue);
 				
 				if (!dominates(currentEfficientSolution, previousEfficientSolution)) {
 					reportEfficientSolution(previousEfficientSolution);
