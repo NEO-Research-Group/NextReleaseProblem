@@ -189,6 +189,17 @@ public class NRPCplexILPAdaptor implements ILPAdaptor {
 			throw new IllegalArgumentException("The number of objective must be 0 or 1 (biobjective problems)");
 		}
 	}
+	
+	private double computeMaximumSatisfaction() {
+		switch (nextReleaseProblem.getKindOfInstance()) {
+		case ALMERIA:
+			return computeMaximumSatisfactionAlmeria();
+		case XUAN:
+			return computeMaximumSatisfactionXuan();
+		default:
+			throw new RuntimeException("Unsupported kind of instance: "+nextReleaseProblem.getKindOfInstance());
+		}
+	}
 
 	private double computeMaximumSatisfactionAlmeria() {
 		int sumSatisfaction=0;
@@ -204,6 +215,36 @@ public class NRPCplexILPAdaptor implements ILPAdaptor {
 			sumSatisfaction += nextReleaseProblem.getWeightOfStakeholder(stakeholder);
 		}
 		return sumSatisfaction;
+	}
+
+	@Override
+	public double minimumDifferenceBetweenEfficientSolutions(int objective) {
+		return 1;
+	}
+
+	@Override
+	public double idealLowerBound(int objective) {
+		switch (objective) {
+		case VALUE_OBJECTIVE:
+			return -computeMaximumSatisfaction();
+		case EFFORT_OBJECTIVE:
+			return 0;
+		default:
+			throw new RuntimeException("Unsupported kind of instance: "+nextReleaseProblem.getKindOfInstance());
+		}
+		
+	}
+
+	@Override
+	public double nadirUpperBound(int objective) {
+		switch (objective) {
+		case VALUE_OBJECTIVE:
+			return 0;
+		case EFFORT_OBJECTIVE:
+			return nextReleaseProblem.sumOfAllRequirementsEffort();
+		default:
+			throw new RuntimeException("Unsupported kind of instance: "+nextReleaseProblem.getKindOfInstance());
+		}
 	}
 
 	
