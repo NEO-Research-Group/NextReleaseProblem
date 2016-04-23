@@ -1,19 +1,9 @@
 package neo.requirements.cplex;
 
 import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.List;
+import java.util.Properties;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-
-import neo.requirements.cplex.algorithms.ChicanoEpsilonConstraint;
-import neo.requirements.cplex.algorithms.VeerapenEpsilonConstraint;
 import neo.requirements.problems.NextReleaseProblem;
 import neo.requirements.problems.readers.ClassicInstancesReader;
 import neo.requirements.problems.readers.FileReader;
@@ -23,8 +13,17 @@ import neo.requirements.util.EfficientSolution;
 import neo.requirements.util.ILPBasedAlgorithmsManager;
 import neo.requirements.util.SingleThreadCPUTimer;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
 public class MainClass {
 	
+	private static final String CONFIGURATON_OPTION = "O";
 	private static final String ALGORITHMS_PACKAGE = "neo.requirements.cplex.algorithms";
 	private static final String LISTENER = "listener";
 	private static final String PROGRAM_NAME = "MainClass";
@@ -46,12 +45,29 @@ public class MainClass {
 	private Options prepareOptions() {
 	    Options options = new Options();
 	    
-	    options.addOption(INSTANCE, true, "NRP instance file");
-	    options.addOption(ALGORITHM, true, "algorithm used to solve the instance (use ? to see the algorithms)");
+	    Option option = Option.builder(INSTANCE)
+	    		.argName("file")
+	    		.numberOfArgs(1)
+	    		.desc("NRP instance file").build();			    
+	    options.addOption(option);
+	    
+	    option = Option.builder(ALGORITHM)
+	    		.argName("alg")
+	    		.numberOfArgs(1)
+	    		.desc("algorithm used to solve the instance (use ? to see the algorithms)").build();
+	    options.addOption(option);
+	    
 	    options.addOption(XUAN, false, "the problem is the one of Xuan et al.");
 	    options.addOption(LISTENER, false, "enables the solution listener");
 	    options.addOption(ALMERIA, false, "the problem is the one of del Águila et al.");
 	    options.addOption(MEMORY, false, "it reads the sample instance in memory (20 requirements)");
+	    
+	    option = Option.builder(CONFIGURATON_OPTION)
+	    		.argName("property=value")
+	    		.numberOfArgs(2)
+	    		.valueSeparator()
+	    		.desc("use value for given property of the algorithm").build();
+	    options.addOption(option);	    
 	    
 	    return options;
 	}
@@ -118,7 +134,27 @@ public class MainClass {
 				}
 			});
 		}
+		
+		Properties properties = readConfiguration(commandLine);
+		if (properties != null) {
+			solver.setConfiguration(properties);
+		}
+		
 		return solver;
+	}
+
+	protected Properties readConfiguration(CommandLine commandLine) {
+		Properties properties;
+		if (commandLine.hasOption(CONFIGURATON_OPTION)) {
+			String [] configuration = commandLine.getOptionValues(CONFIGURATON_OPTION);
+			properties = new Properties();
+			for (int i=0; i < configuration.length; i+=2) {
+				properties.setProperty(configuration[i], configuration[i+1]);
+			}
+		} else {
+			properties=null;
+		}
+		return properties;
 	}
 
 	protected NextReleaseProblemReader configureReader(CommandLine commandLine) {

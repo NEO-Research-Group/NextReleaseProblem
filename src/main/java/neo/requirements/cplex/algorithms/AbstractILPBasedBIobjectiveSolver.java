@@ -17,8 +17,8 @@ public abstract class AbstractILPBasedBIobjectiveSolver  implements ILPBasedBiob
 	protected ILPSolverListener listener;
 	protected List<EfficientSolution> paretoFront;
 	protected Properties configuration;
-	protected int step;
-	protected boolean naturalOrderForObjectives;
+	protected int step = 1;
+	protected boolean naturalOrderForObjectives = true;
 
 	public AbstractILPBasedBIobjectiveSolver() {
 		super();
@@ -65,7 +65,6 @@ public abstract class AbstractILPBasedBIobjectiveSolver  implements ILPBasedBiob
 	}
 
 	protected void configureStep() {
-		step = 1;
 		String propertyValue = configuration.getProperty("step");
 		if (propertyValue != null) {
 			step = Integer.parseInt(propertyValue);
@@ -73,17 +72,18 @@ public abstract class AbstractILPBasedBIobjectiveSolver  implements ILPBasedBiob
 	}
 
 	protected void configureOrderForObjectives() {
-		naturalOrderForObjectives = true;
 		String propertyValue = configuration.getProperty("objorder");
-		switch (propertyValue) {
-		case "natural":
-			naturalOrderForObjectives = true;
-			break;
-		case "inverse":
-			naturalOrderForObjectives = false;
-			break;
-		default:
-			throw new IllegalArgumentException("Unrecognized order for objectives: "+propertyValue);
+		if (propertyValue != null) {
+			switch (propertyValue) {
+			case "natural":
+				naturalOrderForObjectives = true;
+				break;
+			case "inverse":
+				naturalOrderForObjectives = false;
+				break;
+			default:
+				throw new IllegalArgumentException("Unrecognized order for objectives: "+propertyValue);
+			}
 		}
 	}
 
