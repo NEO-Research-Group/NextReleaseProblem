@@ -17,8 +17,6 @@ import neo.requirements.util.SingleThreadCPUTimer;
 
 public class Augmecon extends AbstractILPBasedBIobjectiveSolver {
 
-	private static final int STEP = 1;
-	
 	@Override
 	public List<EfficientSolution> computeParetoFront(ILPAdaptor adaptor) {
 		SingleThreadCPUTimer timer = new SingleThreadCPUTimer();
@@ -55,7 +53,7 @@ public class Augmecon extends AbstractILPBasedBIobjectiveSolver {
 				modelo.cplex.addMinimize(objective);
 				IloLinearNumExpr secondObjective = adaptor.getObjective(secondObjective());
 				secondObjective.addTerm(1.0, ell);
-				modelo.cplex.addEq(secondObjective, secondObjValue-STEP);
+				modelo.cplex.addEq(secondObjective, secondObjValue-step);
 			}
 			reportEfficientSolution(previousEfficientSolution);
 			
@@ -63,14 +61,6 @@ public class Augmecon extends AbstractILPBasedBIobjectiveSolver {
 		} catch (IloException e) {
 			throw new RuntimeException (e);
 		}
-	}
-
-	protected int secondObjective() {
-		return 1;
-	}
-
-	protected int firstObjective() {
-		return 0;
 	}
 
 	private double evaluateLinearExpression(Modelo modelo, IloLinearNumExpr objective) throws IloException {

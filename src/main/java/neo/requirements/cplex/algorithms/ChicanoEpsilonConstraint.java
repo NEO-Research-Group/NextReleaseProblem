@@ -16,8 +16,6 @@ import neo.requirements.util.SingleThreadCPUTimer;
 
 public class ChicanoEpsilonConstraint extends AbstractILPBasedBIobjectiveSolver {
 	
-	private static final int STEP = 1;
-
 	@Override
 	public List<EfficientSolution> computeParetoFront(ILPAdaptor adaptor) {
 		SingleThreadCPUTimer timer = new SingleThreadCPUTimer();
@@ -43,7 +41,7 @@ public class ChicanoEpsilonConstraint extends AbstractILPBasedBIobjectiveSolver 
 				reportEfficientSolution(efficientSolution);
 
 				modelo = adaptor.ilpModelForConstraints();
-				modelo.cplex.addLe(adaptor.getObjective(secondObjective()), secondObjValue-STEP);
+				modelo.cplex.addLe(adaptor.getObjective(secondObjective()), secondObjValue-step);
 				modelo.cplex.addMinimize(adaptor.getObjective(firstObjective()));
 			}
 			return paretoFront;
@@ -52,14 +50,6 @@ public class ChicanoEpsilonConstraint extends AbstractILPBasedBIobjectiveSolver 
 		}
 	}
 
-	protected int secondObjective() {
-		return 1;
-	}
-
-	protected int firstObjective() {
-		return 0;
-	}
-	
 	@Override
 	public String getName() {
 		return "Chicano epsilon constraint";

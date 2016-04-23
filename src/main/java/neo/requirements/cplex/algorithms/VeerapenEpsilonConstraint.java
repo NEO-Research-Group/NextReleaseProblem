@@ -17,8 +17,6 @@ import neo.requirements.util.SingleThreadCPUTimer;
 
 public class VeerapenEpsilonConstraint extends AbstractILPBasedBIobjectiveSolver {
 
-	private static final int STEP = 1;
-	
 	@Override
 	public List<EfficientSolution> computeParetoFront(ILPAdaptor adaptor) {
 		SingleThreadCPUTimer timer = new SingleThreadCPUTimer();
@@ -43,7 +41,7 @@ public class VeerapenEpsilonConstraint extends AbstractILPBasedBIobjectiveSolver
 				previousEfficientSolution=currentEfficientSolution;
 				
 				modelo = adaptor.ilpModelForConstraints();
-				modelo.cplex.addLe(adaptor.getObjective(secondObjective()), secondObjValue-STEP);
+				modelo.cplex.addLe(adaptor.getObjective(secondObjective()), secondObjValue-step);
 				modelo.cplex.addMinimize(adaptor.getObjective(firstObjective()));
 			}
 			reportEfficientSolution(previousEfficientSolution);
@@ -52,14 +50,6 @@ public class VeerapenEpsilonConstraint extends AbstractILPBasedBIobjectiveSolver
 		} catch (IloException e) {
 			throw new RuntimeException (e);
 		}
-	}
-
-	protected int secondObjective() {
-		return 1;
-	}
-
-	protected int firstObjective() {
-		return 0;
 	}
 
 	private double evaluateLinearExpression(Modelo modelo, IloLinearNumExpr objective) throws IloException {
