@@ -79,7 +79,7 @@ public abstract class AbstractAnytime extends AbstractILPBasedBIobjectiveSolver 
 		}
 	}
 	
-	private PriorityQueue<PairOfEfficientSolutions> queue;
+	protected PriorityQueue<PairOfEfficientSolutions> queue;
 	protected SingleThreadCPUTimer timer;
 	protected ILPAdaptor adaptor;
 	protected Double lambdaValue= null;
@@ -135,13 +135,9 @@ public abstract class AbstractAnytime extends AbstractILPBasedBIobjectiveSolver 
 	}
 	
 	protected abstract EfficientSolution getNonDominatedSolutionInRectangle(PairOfEfficientSolutions pair) throws IloException;
-
-	protected void addNewPairIfRequired(PairOfEfficientSolutions pair) {
-		PairOfEfficientSolutions newPair = pair.clone();
-		newPair.lower = buildEfficientSolution(timer, pair.lower.getObjectiveValue(firstObjective()), getEpsilonForPair(pair));
-		queue.add(newPair);
-	}
-
+	protected abstract void addNewPairIfRequired(PairOfEfficientSolutions pair);
+	
+	
 	protected void reportInnecesaryRunOfILPSolver() {
 		if (listener!=null) {
 			listener.reportInnecesaryRunOfSolver();
