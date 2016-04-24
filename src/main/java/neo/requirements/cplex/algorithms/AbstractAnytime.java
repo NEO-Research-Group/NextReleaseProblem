@@ -8,7 +8,6 @@ import ilog.cplex.IloCplex.UnknownObjectException;
 
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Properties;
 
 import neo.requirements.cplex.ILPAdaptor;
 import neo.requirements.cplex.Modelo;
@@ -82,9 +81,6 @@ public abstract class AbstractAnytime extends AbstractILPBasedBIobjectiveSolver 
 	protected PriorityQueue<PairOfEfficientSolutions> queue;
 	protected SingleThreadCPUTimer timer;
 	protected ILPAdaptor adaptor;
-	protected Double lambdaValue= null;
-	
-
 	@Override
 	public List<EfficientSolution> computeParetoFront(ILPAdaptor adaptor) {
 		try {
@@ -200,17 +196,6 @@ public abstract class AbstractAnytime extends AbstractILPBasedBIobjectiveSolver 
 			}
 		}
 		return result;
-	}
-	
-	protected void configureLambda(Properties configuration) {
-		String lambdaProperty= configuration.getProperty("lambda");
-		if (lambdaProperty!=null) {
-			if ("adaptive".equals(lambdaProperty)) {
-				lambdaValue=null;
-			} else {
-				lambdaValue = Double.parseDouble(lambdaProperty);
-			}
-		}
 	}
 
 }

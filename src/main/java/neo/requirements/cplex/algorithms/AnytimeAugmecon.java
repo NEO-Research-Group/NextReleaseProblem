@@ -1,5 +1,7 @@
 package neo.requirements.cplex.algorithms;
 
+import java.util.Properties;
+
 import ilog.concert.IloException;
 import ilog.concert.IloLinearNumExpr;
 import ilog.concert.IloNumVar;
@@ -7,6 +9,8 @@ import neo.requirements.cplex.Modelo;
 import neo.requirements.util.EfficientSolution;
 
 public class AnytimeAugmecon extends AbstractAnytime {
+
+	protected Double lambdaValue = null;
 
 	@Override
 	public String getName() {
@@ -52,6 +56,23 @@ public class AnytimeAugmecon extends AbstractAnytime {
 		PairOfEfficientSolutions newPair = pair.clone();
 		newPair.lower = buildEfficientSolution(timer, pair.lower.getObjectiveValue(firstObjective()), getEpsilonForPair(pair));
 		queue.add(newPair);
+	}
+	
+	@Override
+	public void setConfiguration(Properties configuration) {
+		super.setConfiguration(configuration);
+		configureLambda(configuration);
+	}
+
+	protected void configureLambda(Properties configuration) {
+		String lambdaProperty= configuration.getProperty("lambda");
+		if (lambdaProperty!=null) {
+			if ("adaptive".equals(lambdaProperty)) {
+				lambdaValue=null;
+			} else {
+				lambdaValue = Double.parseDouble(lambdaProperty);
+			}
+		}
 	}
 
 }
