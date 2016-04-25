@@ -1,6 +1,8 @@
 package neo.requirements.cplex;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 
@@ -114,8 +116,28 @@ public class MainClass {
 			System.out.println(solution);
 		}
 		System.out.println(paretoFront.size()+ " efficient solutions computed");
-		
+		System.out.println("Hypervolume: "+computeHypervolume(paretoFront));
 		System.out.println("Time: "+computationTime+ " ms");
+	}
+
+	private double computeHypervolume(List<EfficientSolution> paretoFront) {
+		Collections.sort(paretoFront, new Comparator<EfficientSolution>(){
+			@Override
+			public int compare(EfficientSolution o1, EfficientSolution o2) {
+				return Double.compare(o1.getObjectiveValue(0), o2.getObjectiveValue(0));
+			}
+		});
+		
+		double hypervolume=0.0;
+		double prevX = paretoFront.get(0).getObjectiveValue(0);
+		double origenY = paretoFront.get(0).getObjectiveValue(1);
+		double prevY = origenY;
+		for (EfficientSolution solution: paretoFront) {
+			hypervolume +=  (solution.getObjectiveValue(0) - prevX) * (origenY-prevY);
+			prevX = solution.getObjectiveValue(0);
+			prevY = solution.getObjectiveValue(1);
+		}
+		return hypervolume;
 	}
 
 	protected ILPBasedBiobjectiveSolver configureSolver(CommandLine commandLine) {

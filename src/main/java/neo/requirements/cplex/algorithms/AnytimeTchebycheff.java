@@ -36,10 +36,10 @@ public class AnytimeTchebycheff extends AbstractAnytime {
 				pair.upper.getObjectiveValue(secondObjective()));
 		
 		double x1 = x2 - 0.5;
-		double y1 = y0 + 0.5;
+		double y1 = y0 - 0.5;
 		
-		modelo.cplex.addGe(adaptor.getObjective(firstObjective()), x0);
-		modelo.cplex.addGe(adaptor.getObjective(secondObjective()), y2);
+		modelo.cplex.addLe(adaptor.getObjective(firstObjective()), x2);
+		modelo.cplex.addLe(adaptor.getObjective(secondObjective()), y0);
 		
 		IloNumVar z = modelo.cplex.numVar(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 		IloLinearNumExpr x = adaptor.getObjective(firstObjective());
