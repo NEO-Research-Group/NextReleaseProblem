@@ -20,6 +20,7 @@ public class ChicanoEpsilonConstraint extends AbstractILPBasedBIobjectiveSolver 
 	public List<EfficientSolution> computeParetoFront(ILPAdaptor adaptor) {
 		SingleThreadCPUTimer timer = new SingleThreadCPUTimer();
 		timer.startTimer();
+		setTimerStop(timer);
 		try {
 			createParetoFront();
 			configureOrderForObjectives(adaptor);
@@ -27,7 +28,7 @@ public class ChicanoEpsilonConstraint extends AbstractILPBasedBIobjectiveSolver 
 			Modelo modelo = adaptor.ilpModelForConstraints();
 			modelo.cplex.addMinimize(adaptor.getObjective(firstObjective()));
 
-			while (solveIlpInstance(modelo)) {
+			while (!timer.shouldStop() && solveIlpInstance(modelo)) {
 				double firstObjValue = (int)Math.round(modelo.cplex.getObjValue());
 
 				modelo = adaptor.ilpModelForConstraints();

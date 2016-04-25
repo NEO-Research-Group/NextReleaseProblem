@@ -88,6 +88,8 @@ public abstract class AbstractAnytime extends AbstractILPBasedBIobjectiveSolver 
 			this.adaptor = adaptor;
 			timer = new SingleThreadCPUTimer();
 			timer.startTimer();
+			setTimerStop(timer);
+			
 			createParetoFront();
 			queue = new PriorityQueue<>();
 			
@@ -102,7 +104,7 @@ public abstract class AbstractAnytime extends AbstractILPBasedBIobjectiveSolver 
 			PairOfEfficientSolutions pair = new PairOfEfficientSolutions(lower, upper);
 			queue.add(pair);
 			
-			while (!queue.isEmpty()) {
+			while (!timer.shouldStop() && !queue.isEmpty()) {
 				pair = queue.poll();
 				
 				if (!tooSmall(pair)) {

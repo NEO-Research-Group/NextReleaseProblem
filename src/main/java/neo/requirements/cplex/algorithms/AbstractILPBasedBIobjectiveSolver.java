@@ -16,12 +16,26 @@ import neo.requirements.util.EfficientSolutionWithTimeStamp;
 import neo.requirements.util.SingleThreadCPUTimer;
 
 public abstract class AbstractILPBasedBIobjectiveSolver  implements ILPBasedBiobjectiveSolver{
+	
+	public static final double DEFAULT_EPGAP = 1E-9;
+	public static final double DEFAULT_EPAGAP = 1E-9;
+	public static final double DEFAULT_EPOPT = 1E-9;
+	public static final double DEFAULT_EPINT = 1E-9;
+	
+	
+	
 
 	protected ILPSolverListener listener;
 	protected List<EfficientSolution> paretoFront;
 	protected Properties configuration;
 	protected int step = 1;
 	protected boolean naturalOrderForObjectives = true;
+	
+	private double epInt = DEFAULT_EPINT;
+	private double epOpt = DEFAULT_EPOPT;
+	private double epAGap = DEFAULT_EPAGAP;
+	private double epGap = DEFAULT_EPGAP;
+	
 
 	public AbstractILPBasedBIobjectiveSolver() {
 		super();
@@ -41,9 +55,10 @@ public abstract class AbstractILPBasedBIobjectiveSolver  implements ILPBasedBiob
 
 	protected boolean solveIlpInstance(Modelo modelo) throws IloException {	
 			modelo.cplex.setOut(null);
-			modelo.cplex.setParam(IloCplex.DoubleParam.EpInt, 1E-9);
-			modelo.cplex.setParam(IloCplex.DoubleParam.EpGap, 1E-9);
-			modelo.cplex.setParam(IloCplex.DoubleParam.EpOpt, 1E-9);
+			modelo.cplex.setParam(IloCplex.DoubleParam.EpInt, epInt);
+			modelo.cplex.setParam(IloCplex.DoubleParam.EpGap, epGap);
+			modelo.cplex.setParam(IloCplex.DoubleParam.EpAGap, epAGap);
+			modelo.cplex.setParam(IloCplex.DoubleParam.EpOpt, epOpt);
 			return modelo.cplex.solve();
 	}
 
@@ -64,7 +79,29 @@ public abstract class AbstractILPBasedBIobjectiveSolver  implements ILPBasedBiob
 
 	private void processConfigurationOptions() {
 		configureStep();
-		//configureOrderForObjectives();
+		configureEpsilonConstants();
+	}
+
+	private void configureEpsilonConstants() {
+		String property = configuration.getProperty("EpInt");
+		if (property!=null) {
+			epInt = Double.parseDouble(property);
+		}
+		
+		property = configuration.getProperty("EpOpt");
+		if (property!=null) {
+			epOpt = Double.parseDouble(property);
+		}
+		
+		property = configuration.getProperty("EpGap");
+		if (property!=null) {
+			epGap = Double.parseDouble(property);
+		}
+		
+		property = configuration.getProperty("EpAGap");
+		if (property!=null) {
+			epAGap = Double.parseDouble(property);
+		}
 	}
 
 	protected void configureStep() {
@@ -115,5 +152,12 @@ public abstract class AbstractILPBasedBIobjectiveSolver  implements ILPBasedBiob
 				values[secondObjective()] = secondObjValue;
 				return new EfficientSolutionWithTimeStamp(values,  timer.elapsedTimeInMilliseconds());
 			}
+
+	protected void setTimerStop(SingleThreadCPUTimer timer) {
+		String property = configuration.getProperty("time");
+		if (property != null) {
+			timer.setStopTimeMilliseconds(Integer.parseInt(property)*1000);
+		}
+	}
 
 }

@@ -21,6 +21,7 @@ public class VeerapenEpsilonConstraint extends AbstractILPBasedBIobjectiveSolver
 	public List<EfficientSolution> computeParetoFront(ILPAdaptor adaptor) {
 		SingleThreadCPUTimer timer = new SingleThreadCPUTimer();
 		timer.startTimer();
+		setTimerStop(timer);
 		try {
 			createParetoFront();
 			configureOrderForObjectives(adaptor);
@@ -30,7 +31,7 @@ public class VeerapenEpsilonConstraint extends AbstractILPBasedBIobjectiveSolver
 			
 			EfficientSolution previousEfficientSolution=null;
 
-			while (solveIlpInstance(modelo)) {
+			while (!timer.shouldStop() && solveIlpInstance(modelo)) {
 				double firstObjValue = (int)Math.round(modelo.cplex.getObjValue());
 				double secondObjValue = (int)Math.round(evaluateLinearExpression(modelo, adaptor.getObjective(secondObjective())));
 				

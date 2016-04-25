@@ -48,7 +48,7 @@ public class SingleThreadCPUTimer {
     
     public boolean shouldStop() {
         if (!stopSet) {
-            throw new RuntimeException("Stop time not set");
+            return false;
         }
         return elapsedTime() >= stopTime;
     }
